@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PendudukController extends Controller
 {
@@ -13,7 +14,14 @@ class PendudukController extends Controller
      */
     public function index()
     {
-        $data["penduduk"] = \App\Models\Penduduk::orderBy('id','desc')->paginate(20);
+        if (Auth::user()->role == 'super admin') {
+            $data["penduduk"] = \App\Models\Penduduk::orderBy('id', 'desc')->paginate(20);
+        } else {
+            $data["penduduk"] = \App\Models\Penduduk::orderBy('id', 'desc')
+                ->where('kode_desa', Auth::user()->kode_desa)
+                ->paginate(20);
+        }
+
         return view('penduduk.index', $data);
     }
 
@@ -59,6 +67,7 @@ class PendudukController extends Controller
             $data->kode_kecamatan = $request["kode_kecamatan"];
             $data->kecamatan = $request["nama_kecamatan"];
             $data->status = $request["status"];
+            $data->agama = $request["agama"];
             $data->keterangan = $request["keterangan"];
             if ($data->save()) {
                 $response = [
@@ -117,6 +126,7 @@ class PendudukController extends Controller
      */
     public function update(Request $request)
     {
+        // dd($request->all());
         $check = \App\Models\Penduduk::where('nik', $request["nik"])->first();
         if ($check) {
             $data = \App\Models\Penduduk::findOrFail($check->id);
@@ -136,6 +146,7 @@ class PendudukController extends Controller
             $data->kecamatan = $request["nama_kecamatan"];
             $data->status = $request["status"];
             $data->keterangan = $request["keterangan"];
+            $data->agama = $request["agama"];
             if ($request["status"] == 'pindah') {
                 $pindah = \App\Models\PendudukPindah::where('nik', $request["nik"])
                     ->where('alamat_asal', $request["alamat_asal"])
@@ -220,5 +231,11 @@ class PendudukController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function data_pindah($nik)
+    {
+        $data = \App\Models\PendudukPindah::where('nik', $nik)->get();
+        return response()->json($data);
     }
 }

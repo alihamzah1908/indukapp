@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function proseslogin(Request $request)
     {
         $check = \App\User::where('username', $request["username"])->first();
         if (!$check) {
@@ -28,7 +28,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             $user = \App\User::where('username', $request["username"])->first();
             if ($user) {
-                return redirect(route('home'));
+                return redirect(route('dashboard'));
             } else {
                 return redirect()->back()->with('error', 'Username tidak tersedia');
             }

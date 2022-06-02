@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/images/data.png') }}">
 
     <!-- plugins -->
     <link href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" />
@@ -20,7 +20,26 @@
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .btn-primary-custom {
+            color: #fff;
+            background-color: #990073;
+            border-color: #990073;
+        }
 
+        .btn-success-custom {
+            color: #fff;
+            background-color: #f14c52;
+            border-color: #f14c52;
+        }
+
+        .page-item.active .page-link {
+            z-index: 1;
+            color: #fff;
+            background-color: #990073;
+            border-color: #990073;
+        }
+    </style>
 </head>
 
 <body>
@@ -33,8 +52,8 @@
                 <!-- LOGO -->
                 <a href="index.html" class="navbar-brand mr-0 mr-md-2 logo">
                     <span class="logo-lg">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="" height="24" />
-                        <span class="d-inline h5 ml-1 text-logo">Shreyu</span>
+                        <img src="{{ asset('assets/images/data.png') }}" alt="" height="24" />
+                        <span class="d-inline h5 ml-1 text-logo">Penduduk</span>
                     </span>
                     <span class="logo-sm">
                         <img src="{{ asset('assets/images/logo.png') }}" alt="" height="24">
@@ -51,7 +70,7 @@
                 </ul>
 
                 <ul class="navbar-nav flex-row ml-auto d-flex list-unstyled topnav-menu float-right mb-0">
-                    <li class="d-none d-sm-block">
+                    <!-- <li class="d-none d-sm-block">
                         <div class="app-search">
                             <form>
                                 <div class="input-group">
@@ -60,7 +79,7 @@
                                 </div>
                             </form>
                         </div>
-                    </li>
+                    </li> -->
 
                     <li class="dropdown notification-list align-self-center profile-dropdown">
                         <a class="nav-link dropdown-toggle nav-user mr-0" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
@@ -77,7 +96,7 @@
                         </a>
                         <div class="dropdown-menu profile-dropdown-items dropdown-menu-right">
 
-                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                            <a href="{{ route('logout') }}" class="dropdown-item notify-item">
                                 <i data-feather="log-out" class="icon-dual icon-xs mr-2"></i>
                                 <span>Logout</span>
                             </a>
@@ -96,8 +115,8 @@
                 <img src="{{ asset('assets/images/users/avatar-7.jpg') }}" class="avatar-xs rounded-circle mr-2" alt="Shreyu" />
 
                 <div class="media-body">
-                    <h6 class="pro-user-name mt-0 mb-0">Nik Patel</h6>
-                    <span class="pro-user-desc">Administrator</span>
+                    <h6 class="pro-user-name mt-0 mb-0">{{ ucfirst(Auth::user()->name) }}</h6>
+                    <span class="pro-user-desc">{{ ucfirst(Auth::user()->role) }}</span>
                 </div>
                 <div class="dropdown align-self-center profile-dropdown-menu">
                     <a class="dropdown-toggle mr-0" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
@@ -105,7 +124,7 @@
                     </a>
                     <div class="dropdown-menu profile-dropdown">
 
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <a href="{{ route('logout') }}" class="dropdown-item notify-item">
                             <i data-feather="log-out" class="icon-dual icon-xs mr-2"></i>
                             <span>Logout</span>
                         </a>
@@ -168,7 +187,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <?php echo date('Y') ?> &copy; Diskominfo Ciamis <i class='uil uil-heart text-danger font-size-12'></i> by <a href="https://coderthemes.com" target="_blank">Coderthemes</a>
+                            <?php echo date('Y') ?> &copy; Diskominfo Ciamis
                         </div>
                     </div>
                 </div>
@@ -238,7 +257,9 @@
     <!-- App js -->
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    @stack('scripts')
 </body>
 
 </html>
