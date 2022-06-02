@@ -109,11 +109,11 @@
                                         <label class="form-label font-weight-bold" for="form9Example1">Agama</label>
                                         <select name="agama" id="agama" class="form-control">
                                             <option value="">Pilih</option>
-                                            <option value="islam"@if($penduduk) {{ $penduduk->agama == 'islam' ? ' selected' : '' }}@endif>Islam</option>
-                                            <option value="kristen"@if($penduduk) {{ $penduduk->agama == 'kristen' ? ' selected' : '' }}@endif>Kristen</option>
-                                            <option value="budha"@if($penduduk) {{ $penduduk->agama == 'budha' ? ' selected' : '' }}@endif>Budha</option>
-                                            <option value="hindu"@if($penduduk) {{ $penduduk->agama == 'hindu' ? ' selected' : '' }}@endif>Hindu</option>
-                                            <option value="konghucu"@if($penduduk) {{ $penduduk->agama == 'konghucu' ? ' selected' : '' }}@endif>Konghucu</option>
+                                            <option value="islam" @if($penduduk) {{ $penduduk->agama == 'islam' ? ' selected' : '' }}@endif>Islam</option>
+                                            <option value="kristen" @if($penduduk) {{ $penduduk->agama == 'kristen' ? ' selected' : '' }}@endif>Kristen</option>
+                                            <option value="budha" @if($penduduk) {{ $penduduk->agama == 'budha' ? ' selected' : '' }}@endif>Budha</option>
+                                            <option value="hindu" @if($penduduk) {{ $penduduk->agama == 'hindu' ? ' selected' : '' }}@endif>Hindu</option>
+                                            <option value="konghucu" @if($penduduk) {{ $penduduk->agama == 'konghucu' ? ' selected' : '' }}@endif>Konghucu</option>
                                         </select>
                                     </div>
                                 </div>
@@ -121,7 +121,20 @@
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Hubungan Keluarga</label>
-                                        <input type="text" name="hubungan_keluarga" id="hubungan_keluarga" class="form-control" value="{{ $penduduk ? $penduduk->hubungan_keluarga : '' }}" />
+                                        <select name="hubungan_keluarga" id="hubungan_keluarga" class="form-control">
+                                            <option value="">Pilih</option>
+                                            <option value="1" @if($penduduk) {{ $penduduk->hubungan_keluarga == '1' ? ' selected' : '' }}@endif>Kepala Keluarga</option>
+                                            <option value="2" @if($penduduk) {{ $penduduk->hubungan_keluarga == '2' ? ' selected' : '' }}@endif>Suami</option>
+                                            <option value="3" @if($penduduk) {{ $penduduk->hubungan_keluarga == '3' ? ' selected' : '' }}@endif>Istri</option>
+                                            <option value="4" @if($penduduk) {{ $penduduk->hubungan_keluarga == '4' ? ' selected' : '' }}@endif>Anak</option>
+                                            <option value="5" @if($penduduk) {{ $penduduk->hubungan_keluarga == '5' ? ' selected' : '' }}@endif>Menantu</option>
+                                            <option value="6" @if($penduduk) {{ $penduduk->hubungan_keluarga == '6' ? ' selected' : '' }}@endif>Cucu</option>
+                                            <option value="7" @if($penduduk) {{ $penduduk->hubungan_keluarga == '7' ? ' selected' : '' }}@endif>Orang Tua</option>
+                                            <option value="8" @if($penduduk) {{ $penduduk->hubungan_keluarga == '8' ? ' selected' : '' }}@endif>Mertua</option>
+                                            <option value="9" @if($penduduk) {{ $penduduk->hubungan_keluarga == '9' ? ' selected' : '' }}@endif>Famili Lain</option>
+                                            <option value="10" @if($penduduk) {{ $penduduk->hubungan_keluarga == '10' ? ' selected' : '' }}@endif>Lainya</option>
+                                        </select>
+                                        <!-- <input type="text" name="hubungan_keluarga" id="hubungan_keluarga" class="form-control" value="{{ $penduduk ? $penduduk->hubungan_keluarga : '' }}" /> -->
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +143,7 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Alamat Lengkap</label>
-                                        <textarea id="alamat" name="alamat" class="form-control" value="{{ $penduduk ? $penduduk->alamat : '' }}">{{ $penduduk ? $penduduk->alamat : '' }}</textarea>
+                                        <textarea id="alamat" name="alamat" class="form-control" value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->alamat_baru : $penduduk->alamat }}">{{ $penduduk->get_pindah ? $penduduk->get_pindah->alamat_baru : $penduduk->alamat }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +158,11 @@
                                             @endphp
                                             <option value="">Pilih</option>
                                             @foreach($kecamatan as $val)
-                                            <option value="{{ $val->code_kecamatan }}" @if($penduduk){{ $val->code_kecamatan == $penduduk->kode_kecamatan ? ' selected' : ''}}@endif>{{ $val->kecamatan }}</option>
+                                                @if($penduduk->get_pindah)
+                                                    <option value="{{ $val->code_kecamatan }}" @if($penduduk->get_pindah){{ $val->code_kecamatan == $penduduk->get_pindah->kode_kecamatan ? ' selected' : ''}}@endif>{{ $val->kecamatan }}</option>
+                                                @else
+                                                    <option value="{{ $val->code_kecamatan }}" @if($penduduk){{ $val->code_kecamatan == $penduduk->kode_kecamatan ? ' selected' : ''}}@endif>{{ $val->kecamatan }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
@@ -157,11 +174,19 @@
                                         <select name="kode_desa" id="kode_desa" class="form-control">
                                             @if($penduduk)
                                             @php
-                                            $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->kode_kecamatan)->get();
+                                            if($penduduk->get_pindah){
+                                                $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->get_pindah->kode_kecamatan)->get();
+                                            }else{
+                                                $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->kode_kecamatan)->get();
+                                            }
                                             @endphp
-                                                @foreach($desa as $val)
-                                                    <option value="{{ $val->code_kelurahan }}"@if($penduduk) {{ $penduduk->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
-                                                @endforeach
+                                            @foreach($desa as $val)
+                                                @if($penduduk->get_pindah)
+                                                <option value="{{ $val->code_kelurahan }}" @if($penduduk->get_pindah){{ $penduduk->get_pindah->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
+                                                @else
+                                                <option value="{{ $val->code_kelurahan }}" @if($penduduk) {{ $penduduk->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
+                                                @endif
+                                            @endforeach
                                             @endif
                                         </select>
                                     </div>
@@ -170,14 +195,14 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">RW</label>
-                                        <input type="text" name="no_rw" id="no_rw" class="form-control" value="{{ $penduduk ? $penduduk->no_rw : '' }}" />
+                                        <input type="text" name="no_rw" id="no_rw" class="form-control" value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rw_baru : $penduduk->no_rw }}" />
                                     </div>
                                 </div>
                                 <div class="col">
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">RT</label>
-                                        <input type="text" name="no_rt" id="no_rt" class="form-control" value="{{ $penduduk ? $penduduk->no_rt : '' }}" />
+                                        <input type="text" name="no_rt" id="no_rt" class="form-control" value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rt_baru : $penduduk->no_rt }}" />
                                     </div>
                                 </div>
                             </div>
@@ -189,13 +214,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="form-pindah" class="mt-4 border-top" @if(!$penduduk || $penduduk->status != 'pindah')  style="display: none;" @endif>
-                                <h4 class="header-title mt-0 mb-1 mt-4">Informasi Pindah</h4>
+                            <div id="form-pindah" class="mt-4 border-top" @if(!$penduduk || $penduduk->status != 'pindah') style="display: none;" @endif>
+                                <h4 class="header-title mt-0 mb-1 mt-4">Informasi Pindah / Datang</h4>
                                 @php
                                 if($penduduk){
                                     $status_pindah = \App\Models\PendudukPindah::where('nik', $penduduk->nik)
-                                    ->orderBy('id','desc')
-                                    ->first();
+                                        ->orderBy('id','desc')
+                                        ->first();
                                 }else{
                                     $status_pindah = false;
                                 }
@@ -205,14 +230,59 @@
                                         <!-- Name input -->
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example1">Alamat Asal</label>
-                                            <textarea name="alamat_asal" id="alamat_asal" class="form-control" value="{{ $status_pindah ? $status_pindah->alamat_baru : '' }}">{{ $status_pindah ? $status_pindah->alamat_baru : ''}}</textarea>
+                                            <textarea name="alamat_asal" id="alamat_asal" class="form-control" value="{{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}">{{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}</textarea>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <!-- Email input -->
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example2">Alamat Baru</label>
-                                            <textarea name="alamat_baru" id="alamat_baru" class="form-control" value=""></textarea>
+                                            <textarea name="alamat_baru" id="alamat_baru" class="form-control" value="" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-1 mt-4">
+                                    <div class="col">
+                                        <!-- Name input -->
+                                        <div class="form-outline">
+                                            <label class="form-label font-weight-bold" for="form9Example1">Kecamatan</label>
+                                            <select id="kode_kecamatan_pindah" name="kode_kecamatan_pindah" class="form-control">
+                                                @php
+                                                $kecamatan = \App\Models\Kecamatan::all();
+                                                @endphp
+                                                <option value="">Pilih</option>
+                                                @foreach($kecamatan as $val)
+                                                    @if($penduduk->get_pindah)
+                                                        <option value="{{ $val->code_kecamatan }}" @if($penduduk->get_pindah){{ $val->code_kecamatan == $penduduk->get_pindah->kode_kecamatan ? ' selected' : ''}}@endif>{{ $val->kecamatan }}</option>
+                                                    @else
+                                                        <option value="{{ $val->code_kecamatan }}" @if($penduduk){{ $val->code_kecamatan == $penduduk->kode_kecamatan ? ' selected' : ''}}@endif>{{ $val->kecamatan }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <!-- Name input -->
+                                        <div class="form-outline">
+                                            <label class="form-label font-weight-bold" for="form9Example1">Desa</label>
+                                            <select name="kode_desa_pindah" id="kode_desa_pindah" class="form-control">
+                                                @if($penduduk)
+                                                @php
+                                                if($penduduk->get_pindah){
+                                                    $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->get_pindah->kode_kecamatan)->get();
+                                                }else{
+                                                    $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->kode_kecamatan)->get();
+                                                }
+                                                @endphp
+                                                    @foreach($desa as $val)
+                                                        @if($penduduk->get_pindah)
+                                                            <option value="{{ $val->code_kelurahan }}" @if($penduduk->get_pindah){{ $penduduk->get_pindah->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
+                                                        @else
+                                                            <option value="{{ $val->code_kelurahan }}" @if($penduduk) {{ $penduduk->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -221,14 +291,14 @@
                                         <!-- Name input -->
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example1">RT Asal</label>
-                                            <input type="text" name="rt_asal" id="rt_asal" class="form-control" value="{{ $status_pindah ? $status_pindah->rt_baru : ''}}" />
+                                            <input type="text" name="rt_asal" id="rt_asal" class="form-control" value="{{ $status_pindah ? $status_pindah->rt_baru : $penduduk->no_rt }}" />
                                         </div>
                                     </div>
                                     <div class="col">
                                         <!-- Name input -->
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example1">RT Baru</label>
-                                            <input type="text" name="rt_baru" id="rt_baru" class="form-control" value="" />
+                                            <input type="text" name="rt_baru" id="rt_baru" class="form-control" value="" required />
                                         </div>
                                     </div>
                                 </div>
@@ -237,14 +307,14 @@
                                         <!-- Email input -->
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example2">RW Asal</label>
-                                            <input type="text" name="rw_asal" id="rw_asal" class="form-control" value="{{ $status_pindah ? $status_pindah->rw_baru : ''}}" />
+                                            <input type="text" name="rw_asal" id="rw_asal" class="form-control" value="{{ $status_pindah ? $status_pindah->rw_baru : $penduduk->no_rw }}" />
                                         </div>
                                     </div>
                                     <div class="col">
                                         <!-- Email input -->
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example2">RW Baru</label>
-                                            <input type="text" name="rw_baru" id="rw_baru" class="form-control" value="" />
+                                            <input type="text" name="rw_baru" id="rw_baru" class="form-control" value="" required />
                                         </div>
                                     </div>
                                 </div>
@@ -273,7 +343,7 @@
                                     <div class="col">
                                         <!-- Name input -->
                                         <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example1">Alamat</label>
+                                            <label class="form-label font-weight-bold" for="form9Example1">Alamat Meninggal</label>
                                             <textarea name="alamat_meninggal" id="alamat_meninggal" class="form-control" value="{{ $status_meninggal ? $status_meninggal->alamat : '' }}">{{ $status_meninggal ? $status_meninggal->alamat : '' }}</textarea>
                                         </div>
                                     </div>
@@ -281,7 +351,7 @@
                                         <!-- Email input -->
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example2">Tanggal Meninggal</label>
-                                            <input type="date" name="tanggal_meninggal" id="tanggal_meninggal" class="form-control" value="{{ $status_meninggal ? $status_meninggal->tanggal_meninggal : '' }}"/>
+                                            <input type="date" name="tanggal_meninggal" id="tanggal_meninggal" class="form-control" value="{{ $status_meninggal ? $status_meninggal->tanggal_meninggal : '' }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -380,6 +450,42 @@
                     body += '<td>' + value.tanggal_pindah + '</td>'
                     body += '</tr>'
                     $('#table-riwayat > tbody').append(body)
+                })
+            })
+        })
+
+        // GET KECAMATAN
+        $('body').on('change', '#kode_kecamatan', function() {
+            $('#kode_desa').html(' ')
+            $.ajax({
+                url: '{{ route("data.kecamatan") }}',
+                dataType: 'json',
+                method: 'get',
+                data: {
+                    'kode_kecamatan': $(this).val()
+                }
+            }).done(function(response) {
+                $.each(response, function(index, value) {
+                    var body = '<option value=' + value.code_kelurahan + '>' + value.nama_kelurahan + '</option>'
+                    $('#kode_desa').append(body)
+                })
+            })
+        })
+
+        // GET KECAMATAN PINDAH
+        $('body').on('change', '#kode_kecamatan_pindah', function() {
+            $('#kode_desa_pindah').html(' ')
+            $.ajax({
+                url: '{{ route("data.kecamatan") }}',
+                dataType: 'json',
+                method: 'get',
+                data: {
+                    'kode_kecamatan': $(this).val()
+                }
+            }).done(function(response) {
+                $.each(response, function(index, value) {
+                    var body = '<option value=' + value.code_kelurahan + '>' + value.nama_kelurahan + '</option>'
+                    $('#kode_desa_pindah').append(body)
                 })
             })
         })

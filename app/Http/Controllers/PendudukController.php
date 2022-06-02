@@ -12,14 +12,32 @@ class PendudukController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (Auth::user()->role == 'super admin') {
-            $data["penduduk"] = \App\Models\Penduduk::orderBy('id', 'desc')->paginate(20);
+            if ($request["nik"] || $request["jenis_kelamin"] || $request["status"]) {
+                $data["penduduk"] = \App\Models\Penduduk::where('nik', $request["nik"])
+                    ->orWhere('jenis_kelamin', $request["jenis_kelamin"])
+                    ->orWhere('status', $request["status"])
+                    ->orderBy('id', 'desc')
+                    ->paginate(20);
+            } else {
+                $data["penduduk"] = \App\Models\Penduduk::orderBy('id', 'desc')
+                    ->paginate(20);
+            }
         } else {
-            $data["penduduk"] = \App\Models\Penduduk::orderBy('id', 'desc')
-                ->where('kode_desa', Auth::user()->kode_desa)
-                ->paginate(20);
+            if ($request["nik"] || $request["jenis_kelamin"] || $request["status"]) {
+                $data["penduduk"] = \App\Models\Penduduk::where('nik', $request["nik"])
+                    ->orWhere('jenis_kelamin', $request["jenis_kelamin"])
+                    ->orWhere('status', $request["status"])
+                    ->orderBy('id', 'desc')
+                    ->where('kode_desa', Auth::user()->kode_desa)
+                    ->paginate(20);
+            } else {
+                $data["penduduk"] = \App\Models\Penduduk::orderBy('id', 'desc')
+                    ->where('kode_desa', Auth::user()->kode_desa)
+                    ->paginate(20);
+            }
         }
 
         return view('penduduk.index', $data);
@@ -103,7 +121,8 @@ class PendudukController extends Controller
      */
     public function show($id)
     {
-        //
+        $data["penduduk"] = \App\Models\Penduduk::findOrFail($id);
+        return view('penduduk.detail', $data);
     }
 
     /**
@@ -148,16 +167,15 @@ class PendudukController extends Controller
             $data->keterangan = $request["keterangan"];
             $data->agama = $request["agama"];
             if ($request["status"] == 'pindah') {
+                // CHECK DATA PINDAH
                 $pindah = \App\Models\PendudukPindah::where('nik', $request["nik"])
-                    ->where('alamat_asal', $request["alamat_asal"])
-                    ->where('alamat_baru', $request["alamat_baru"])
+                    // ->where('alamat_asal', '=', $request["alamat_asal"])
+                    // ->where('alamat_baru', $request["alamat_baru"])
+                    ->orderBy('id', 'desc')
                     ->first();
-                $data1 = \App\Models\Penduduk::findOrFail($check->id);
-                $data1->alamat = $request["alamat_baru"];
-                $data1->no_rt = $request["rt_baru"];
-                $data1->no_rw = $request["rw_baru"];
-                $data1->save();
-                if (!$pindah) {
+                // dd($pindah);
+                // dd($request["alamat_baru"]);
+                if (!$pindah && $request["alamat_baru"] != '') {
                     $arr = new \App\Models\PendudukPindah();
                     $arr->nik = $request["nik"];
                     $arr->alamat_asal = $request["alamat_asal"];
@@ -166,6 +184,8 @@ class PendudukController extends Controller
                     $arr->rt_baru = $request["rt_baru"];
                     $arr->rw_asal = $request["rw_asal"];
                     $arr->rw_baru = $request["rw_baru"];
+                    $arr->kode_kecamatan = $request["kode_kecamatan_pindah"];
+                    $arr->kode_desa = $request["kode_desa_pindah"];
                     $arr->tanggal_pindah = $request["tanggal_pindah"];
                     $arr->save();
                 } else {
@@ -177,6 +197,8 @@ class PendudukController extends Controller
                     $arr->rt_baru = $request["rt_baru"];
                     $arr->rw_asal = $request["rw_asal"];
                     $arr->rw_baru = $request["rw_baru"];
+                    $arr->kode_kecamatan = $request["kode_kecamatan_pindah"];
+                    $arr->kode_desa = $request["kode_desa_pindah"];
                     $arr->tanggal_pindah = $request["tanggal_pindah"];
                     $arr->save();
                 }
@@ -236,6 +258,12 @@ class PendudukController extends Controller
     public function data_pindah($nik)
     {
         $data = \App\Models\PendudukPindah::where('nik', $nik)->get();
+        return response()->json($data);
+    }
+
+    public function data_kecamatan(Request $request)
+    {
+        $data = \App\Models\Desa::select('id', 'code_kelurahan', 'nama_kelurahan')->where('code_kecamatan', $request["kode_kecamatan"])->get();
         return response()->json($data);
     }
 }

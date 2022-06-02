@@ -5,6 +5,37 @@
 <div class="col-lg-12">
     <div class="card">
         <div class="card-body">
+            <form action="{{ route('penduduk.index') }}" method="get">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label font-weight-bold" for="form9Example2">Status</label>
+                        <select name="status" class="form-control">
+                            <option value="">Pilih</option>
+                            <option value="meninggal">Meninggal</option>
+                            <option value="pindah">Pindah</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label font-weight-bold" for="form9Example2">Jenis Kelamin</label>
+                        <select name="jenis_kelamin" class="form-control">
+                            <option value="">Pilih</option>
+                            <option value="1">Laki - Laki</option>
+                            <option value="2">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label font-weight-bold" for="form9Example2">NIK</label>
+                        <input type="text" name="nik" class="form-control" value="{{ request()->nik }}" />
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-end">
+                        <button class="btn btn-primary-custom btn-rounded mt-4" type="submit">Cari</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="header-title mt-0 mb-1">Data Penduduk</h4>
@@ -23,17 +54,36 @@
                             <th>No KK</th>
                             <th>Nama Lengkap</th>
                             <th>Tempat Lahir</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                         @foreach($penduduk as $val)
                         <tr>
-                            <td>{{ $val->nik }}</td>
+                            <td>
+                                <a href="{{ route('penduduk.detail', $val->id) }}">
+                                    {{ $val->nik }}
+                                </a>
+                            </td>
                             <td>{{ $val->no_kk }}</td>
                             <td>{{ $val->nama_lengkap }}</td>
                             <td>{{ $val->tempat_lahir }}</td>
                             <td>
+                                @if($val->status == 'meninggal')
+                                <span class="badge badge-danger">
+                                    {{ ucfirst($val->status) }}
+                                </span>
+                                @elseif($val->status == 'pindah')
+                                <span class="badge badge-success">
+                                    {{ ucfirst($val->status) }}
+                                </span>
+                                @endif
+                            </td>
+                            <td>
                                 <a href="{{ route('penduduk.form') }}?nik={{ $val->nik }}">
                                     <button class="btn btn-sm btn-success-custom btn-rounded">Form</button>
+                                </a>
+                                <a href="{{ route('penduduk.detail', $val->id) }}">
+                                    <button class="btn btn-sm btn-primary-custom btn-rounded">Detail</button>
                                 </a>
                             </td>
                         </tr>

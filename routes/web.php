@@ -24,9 +24,13 @@ Route::group(['middleware' => 'auth'], function () {
     })->name('dashboard');
     Route::get('/penduduk', 'PendudukController@index')->name('penduduk.index');
     Route::get('/penduduk/form', 'PendudukController@create')->name('penduduk.form');
+    Route::get('/penduduk/data/detail/{id}', 'PendudukController@show')->name('penduduk.detail');
     Route::post('/penduduk/update', 'PendudukController@update')->name('penduduk.update');
     Route::post('/penduduk/add', 'PendudukController@store')->name('penduduk.add');
 
     // GET DATA PINDAH
     Route::get('/penduduk/data/pindah/{nik}', 'PendudukController@data_pindah')->name('penduduk.pindah');
+
+    // GET DATA KECAMATAN
+    Route::get('/data/kecamatan', 'PendudukController@data_kecamatan')->name('data.kecamatan');
 });
