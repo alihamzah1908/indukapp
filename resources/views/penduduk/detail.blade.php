@@ -195,7 +195,7 @@
                                         <!-- Name input -->
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example1">Kecamatan</label>
-                                            <p>{{ $penduduk->get_kecamatan->kecamatan }}</p>
+                                            <p>{{ $penduduk->get_kecamatan ? $penduduk->get_kecamatan->kecamatan : '' }}</p>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -273,8 +273,8 @@
                                 <th>Alamat Asal</th>
                                 <th>Alamat Baru</th>
                                 <th>RT Asal</th>
-                                <th>RT Baru</th>
                                 <th>RW Asal</th>
+                                <th>RT Baru</th>
                                 <th>RW Baru</th>
                                 <th>Tanggal Pindah</th>
                             </tr>
@@ -312,8 +312,8 @@
                     body += '<td>' + value.alamat_asal + '</td>'
                     body += '<td>' + value.alamat_baru + '</td>'
                     body += '<td>' + value.rt_asal + '</td>'
-                    body += '<td>' + value.rt_baru + '</td>'
                     body += '<td>' + value.rw_asal + '</td>'
+                    body += '<td>' + value.rt_baru + '</td>'
                     body += '<td>' + value.rw_baru + '</td>'
                     body += '<td>' + value.tanggal_pindah + '</td>'
                     body += '</tr>'

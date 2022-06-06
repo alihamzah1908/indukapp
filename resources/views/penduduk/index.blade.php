@@ -73,6 +73,10 @@
                                     {{ ucfirst($val->status) }}
                                 </span>
                                 @elseif($val->status == 'pindah')
+                                <span class="badge badge-primary">
+                                    {{ ucfirst($val->status) }}
+                                </span>
+                                @elseif($val->status == 'lahir') 
                                 <span class="badge badge-success">
                                     {{ ucfirst($val->status) }}
                                 </span>

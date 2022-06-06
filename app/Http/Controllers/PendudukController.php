@@ -169,13 +169,12 @@ class PendudukController extends Controller
             if ($request["status"] == 'pindah') {
                 // CHECK DATA PINDAH
                 $pindah = \App\Models\PendudukPindah::where('nik', $request["nik"])
-                    // ->where('alamat_asal', '=', $request["alamat_asal"])
-                    // ->where('alamat_baru', $request["alamat_baru"])
+                    ->where('alamat_asal', '=', $request["alamat_asal"])
+                    ->where('alamat_baru', $request["alamat_baru"])
                     ->orderBy('id', 'desc')
                     ->first();
                 // dd($pindah);
-                // dd($request["alamat_baru"]);
-                if (!$pindah && $request["alamat_baru"] != '') {
+                if (!$pindah) {
                     $arr = new \App\Models\PendudukPindah();
                     $arr->nik = $request["nik"];
                     $arr->alamat_asal = $request["alamat_asal"];
@@ -235,12 +234,6 @@ class PendudukController extends Controller
                 'information' => 'Nik atau nomor Kartu Keluarga tidak tersedia.',
             ];
         }
-        // } else {
-        //     $response = [
-        //         'status' => 401,
-        //         'information' => 'Token tidak ditemukan, harap informasikan ke pihak terkait',
-        //     ];
-        // }
         return response()->json($response);
     }
 
