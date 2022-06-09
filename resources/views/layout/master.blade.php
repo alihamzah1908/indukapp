@@ -43,6 +43,15 @@
 </head>
 
 <body>
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+            </div>
+        </div>
+    </div>
     <!-- Begin page -->
     <div id="wrapper">
 
@@ -258,7 +267,7 @@
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+
     @stack('scripts')
 </body>
 

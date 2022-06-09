@@ -14,9 +14,9 @@
         <div class="card">
             @php
             if(request()->nik){
-                $action = route("penduduk.update");
+            $action = route("penduduk.update");
             }else{
-                $action = route("penduduk.add");
+            $action = route("penduduk.add");
             }
             @endphp
             <form action="{{ $action }}" method="post" id="form-penduduk">
@@ -113,6 +113,13 @@
                                 <div class="col">
                                     <!-- Name input -->
                                     <div class="form-outline">
+                                        <label class="form-label font-weight-bold" for="form9Example1">Pendidikan Terakhir</label>
+                                        <p>{{ $penduduk ? $penduduk->pddk_akhir : '' }}</p>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <!-- Name input -->
+                                    <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Alamat Lengkap</label>
                                         <p>{{ $penduduk->get_pindah ? $penduduk->get_pindah->alamat_baru : $penduduk->alamat }}</p>
                                     </div>
@@ -124,12 +131,12 @@
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Kecamatan</label>
                                         @if($penduduk->get_pindah)
-                                            @php 
-                                            $kecamatan = \App\Models\Kecamatan::select('kecamatan')->where('code_kecamatan', $penduduk->get_pindah->kode_kecamatan)->first();
-                                            @endphp
-                                            <p>{{ $kecamatan->kecamatan  }}</p>
+                                        @php
+                                        $kecamatan = \App\Models\Kecamatan::select('kecamatan')->where('code_kecamatan', $penduduk->get_pindah->kode_kecamatan)->first();
+                                        @endphp
+                                        <p>{{ $kecamatan->kecamatan  }}</p>
                                         @else
-                                            <p>{{ $penduduk->get_kecamatan->kecamatan }}</p>
+                                        <p>{{ $penduduk->get_kecamatan->kecamatan }}</p>
                                         @endif
                                     </div>
                                 </div>
@@ -138,12 +145,12 @@
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Desa/Kelurahan</label>
                                         @if($penduduk->get_pindah)
-                                            @php 
-                                            $desa = \App\Models\Desa::select('nama_kelurahan')->where('code_kelurahan', $penduduk->get_pindah->kode_desa)->first();
-                                            @endphp
-                                            <p>{{ $desa->nama_kelurahan }}</p>
+                                        @php
+                                        $desa = \App\Models\Desa::select('nama_kelurahan')->where('code_kelurahan', $penduduk->get_pindah->kode_desa)->first();
+                                        @endphp
+                                        <p>{{ $desa->nama_kelurahan }}</p>
                                         @else
-                                            <p>{{ $penduduk->get_desa ? $penduduk->get_desa->nama_kelurahan : '' }}</p>
+                                        <p>{{ $penduduk->get_desa ? $penduduk->get_desa->nama_kelurahan : '' }}</p>
                                         @endif
                                     </div>
                                 </div>
@@ -162,23 +169,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row g-1 mt-4" id="form-keterangan">
-                                <div class="col">
-                                    <div class="form-outline">
-                                        <label class="form-label font-weight-bold" for="form9Example2">Keterangan</label>
-                                        <p>{{ $penduduk ? $penduduk->keterangan : '' }}</p>
-                                    </div>
-                                </div>
-                            </div>
                             <div id="form-pindah" class="mt-4 border-top" @if(!$penduduk || $penduduk->status != 'pindah') style="display: none;" @endif>
                                 <h4 class="header-title mt-0 mb-1 mt-4">Informasi Alamat Asal</h4>
                                 @php
                                 if($penduduk){
-                                    $status_pindah = \App\Models\PendudukPindah::where('nik', $penduduk->nik)
-                                        ->orderBy('id','desc')
-                                        ->first();
+                                $status_pindah = \App\Models\PendudukPindah::where('nik', $penduduk->nik)
+                                ->orderBy('id','desc')
+                                ->first();
                                 }else{
-                                    $status_pindah = false;
+                                $status_pindah = false;
                                 }
                                 @endphp
                                 <div class="row g-1 mt-4">
@@ -222,16 +221,24 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row g-1 mt-4" id="form-keterangan">
+                                    <div class="col">
+                                        <div class="form-outline">
+                                            <label class="form-label font-weight-bold" for="form9Example2">Keterangan</label>
+                                            <p>{{ $penduduk ? $penduduk->keterangan : '' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div id="form-meninggal" class="mt-4 border-top" @if(!$penduduk || $penduduk->status != 'meninggal') style="display: none;" @endif>
                                 <h4 class="header-title mt-0 mb-1 mt-4">Informasi Meninggal</h4>
                                 @php
                                 if($penduduk){
-                                    $status_meninggal = \App\Models\PendudukMeninggal::where('nik', $penduduk->nik)
-                                    ->orderBy('id','desc')
-                                    ->first();
+                                $status_meninggal = \App\Models\PendudukMeninggal::where('nik', $penduduk->nik)
+                                ->orderBy('id','desc')
+                                ->first();
                                 }else{
-                                    $status_meninggal = false;
+                                $status_meninggal = false;
                                 }
                                 @endphp
                                 <div class="row g-1 mt-4">

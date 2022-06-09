@@ -127,6 +127,7 @@ class PendudukController extends Controller
             $data->tanggal_lahir = $request["tanggal_lahir"];
             $data->jenis_kelamin = $request["jenis_kelamin"];
             $data->hubungan_keluarga = $request["hubungan_keluarga"];
+            $data->pddk_akhir = $request["pendidikan_terakhir"];
             $data->alamat = $request["alamat"];
             $data->no_rt = $request["no_rt"];
             $data->no_rw = $request["no_rw"];
@@ -160,7 +161,7 @@ class PendudukController extends Controller
         //         'information' => 'Token tidak ditemukan, harap informasikan ke pihak terkait',
         //     ];
         // }
-        return response()->json($response);
+        return redirect(route('penduduk.index'));
     }
 
     /**
@@ -211,6 +212,7 @@ class PendudukController extends Controller
             $data->no_rw = $request["no_rw"];
             $data->kode_desa = $request["kode_desa"];
             $data->kelurahan = $request["kelurahan"];
+            $data->pddk_akhir = $request["pendidikan_terakhir"];
             $data->kode_kecamatan = $request["kode_kecamatan"];
             $data->kecamatan = $request["nama_kecamatan"];
             $data->status = $request["status"];
@@ -227,28 +229,28 @@ class PendudukController extends Controller
                 if (!$pindah) {
                     $arr = new \App\Models\PendudukPindah();
                     $arr->nik = $request["nik"];
-                    $arr->alamat_asal = $request["alamat_asal"];
-                    $arr->alamat_baru = $request["alamat_baru"];
-                    $arr->rt_asal = $request["rt_asal"];
-                    $arr->rt_baru = $request["rt_baru"];
-                    $arr->rw_asal = $request["rw_asal"];
-                    $arr->rw_baru = $request["rw_baru"];
+                    $arr->alamat_asal = $request["alamat_dalam_asal"] != '' ? $request["alamat_dalam_asal"] : $request["alamat_asal"];
+                    $arr->alamat_baru = $request["alamat_dalam_baru"] != '' ? $request["alamat_dalam_baru"] : $request["alamat_baru"];
+                    $arr->rt_asal = $request["rt_dalam_asal"] != '' ? $request["rt_dalam_asal"] : $request["rt_asal"];
+                    $arr->rt_baru = $request["rt_dalam_baru"] != '' ? $request["rt_dalam_baru"] : $request["rt_baru"];
+                    $arr->rw_asal = $request["rw_dalam_asal"] != '' ? $request["rw_dalam_asal"] : $request["rw_asal"];
+                    $arr->rw_baru = $request["rw_dalam_baru"] != '' ? $request["rw_dalam_baru"] : $request["rw_baru"];
                     $arr->kode_kecamatan = $request["kode_kecamatan_pindah"];
                     $arr->kode_desa = $request["kode_desa_pindah"];
-                    $arr->tanggal_pindah = $request["tanggal_pindah"];
+                    $arr->tanggal_pindah = $request["tanggal_pindah_baru"] != '' ? $request["tanggal_pindah_baru"] : $request["tanggal_pindah_baru"];
                     $arr->save();
                 } else {
                     $arr = \App\Models\PendudukPindah::findOrFail($pindah->id);
                     $arr->nik = $request["nik"];
-                    $arr->alamat_asal = $request["alamat_asal"];
-                    $arr->alamat_baru = $request["alamat_baru"];
-                    $arr->rt_asal = $request["rt_asal"];
-                    $arr->rt_baru = $request["rt_baru"];
-                    $arr->rw_asal = $request["rw_asal"];
-                    $arr->rw_baru = $request["rw_baru"];
+                    $arr->alamat_asal = $request["alamat_dalam_asal"] != '' ? $request["alamat_dalam_asal"] : $request["alamat_asal"];
+                    $arr->alamat_baru = $request["alamat_dalam_baru"] != '' ? $request["alamat_dalam_baru"] : $request["alamat_baru"];
+                    $arr->rt_asal = $request["rt_dalam_asal"] != '' ? $request["rt_dalam_asal"] : $request["rt_asal"];
+                    $arr->rt_baru = $request["rt_dalam_baru"] != '' ? $request["rt_dalam_baru"] : $request["rt_baru"];
+                    $arr->rw_asal = $request["rw_dalam_asal"] != '' ? $request["rw_dalam_asal"] : $request["rw_asal"];
+                    $arr->rw_baru = $request["rw_dalam_baru"] != '' ? $request["rw_dalam_baru"] : $request["rw_baru"];
                     $arr->kode_kecamatan = $request["kode_kecamatan_pindah"];
                     $arr->kode_desa = $request["kode_desa_pindah"];
-                    $arr->tanggal_pindah = $request["tanggal_pindah"];
+                    $arr->tanggal_pindah = $request["tanggal_pindah_baru"] != '' ? $request["tanggal_pindah_baru"] : $request["tanggal_pindah_baru"];
                     $arr->save();
                 }
             } else if ($request["status"] == 'meninggal') {
@@ -284,7 +286,7 @@ class PendudukController extends Controller
                 'information' => 'Nik atau nomor Kartu Keluarga tidak tersedia.',
             ];
         }
-        return response()->json($response);
+        return redirect(route('penduduk.index'));
     }
 
     /**

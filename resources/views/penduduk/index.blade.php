@@ -76,19 +76,25 @@
                                 <span class="badge badge-primary">
                                     {{ ucfirst($val->status) }}
                                 </span>
-                                @elseif($val->status == 'lahir') 
+                                @elseif($val->status == 'lahir')
                                 <span class="badge badge-success">
                                     {{ ucfirst($val->status) }}
                                 </span>
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('penduduk.form') }}?nik={{ $val->nik }}">
-                                    <button class="btn btn-sm btn-success-custom btn-rounded">Form</button>
-                                </a>
-                                <a href="{{ route('penduduk.detail', $val->id) }}">
-                                    <button class="btn btn-sm btn-primary-custom btn-rounded">Detail</button>
-                                </a>
+                                <div class="dropdown ">
+                                    <button class="btn btn-primary-custom btn-rounded btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Aksi
+                                        <i class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg></i>
+                                    </button>
+                                    <div class="dropdown-menu" role="menu">
+                                    <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&edit={{$val->id}}">Edit</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah">Pindah</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.detail', $val->id) }}">Detail</a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         @endforeach

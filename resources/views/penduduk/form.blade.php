@@ -76,7 +76,7 @@
                                         <input type="text" name="tanggal_lahir" id="tanggal_lahir" class="form-control" value="{{ $penduduk ? $penduduk->tanggal_lahir : '' }}" />
                                     </div>
                                 </div>
-                                
+
                                 <div class="col">
                                     <!-- Name input -->
                                     <div class="form-outline">
@@ -200,6 +200,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @if(request()->edit == null)
                             <div class="row mt-4">
                                 <div class="col-md-4">
                                     <!-- Name input -->
@@ -208,14 +209,15 @@
                                         <select name="status" class="form-control" id="form-status">
                                             <option value="">Pilih</option>
                                             <option value="lahir" @if($penduduk) {{ $penduduk->status == 'lahir' ? ' selected' : ''}}@endif>Lahir</option>
-                                            <option value="pindah" @if($penduduk) {{ $penduduk->status == 'pindah' ? ' selected' : ''}}@endif>Pindah / Datang</option>
+                                            <option value="pindah" @if($penduduk) {{ $penduduk->status == 'pindah' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Pindah</option>
                                             <option value="meninggal" @if($penduduk) {{ $penduduk->status == 'meninggal' ? ' selected' : ''}}@endif>Meninggal</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <div id="form-pindah" class="mt-4 border-top" @if(!$penduduk || $penduduk->status != 'pindah') style="display: none;" @endif>
-                                <h4 class="header-title mt-0 mb-1 mt-4">Informasi Pindah / Datang</h4>
+                            @endif
+                            <div id="form-pindah" class="mt-4 border-top" @if(!$penduduk || request()->edit != null) style="display: none;" @endif>
+                                <h4 class="header-title mt-0 mb-1 mt-4">Form Kepindahan</h4>
                                 @php
                                 if($penduduk){
                                 $status_pindah = \App\Models\PendudukPindah::where('nik', $penduduk->nik)
@@ -225,91 +227,162 @@
                                 $status_pindah = false;
                                 }
                                 @endphp
-                                <div class="row g-1 mt-4">
-                                    <!-- <div class="col">
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <input type="radio" class="pindah" name="drone" value="dalam">
+                                            <label for="huey">Dalam Kabupaten</label>
+                                            <input type="radio" class="pindah" name="drone" value="luar">
+                                            <label for="dewey">Luar Kabupaten</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="dalam-kabupaten" style="display: none">
+                                    <div class="row g-1 mt-4">
+                                        <!-- <div class="col">
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example1">Alamat Asal</label>
                                             <textarea name="alamat_asal" id="alamat_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}" @else value="" @endif>@if($penduduk) {{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}@endif</textarea>
                                         </div>
                                     </div> -->
-                                    <input type="hidden" name="alamat_asal" id="alamat_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}" @else value="" @endif>
-                                    <div class="col-md-6">
-                                        <!-- Email input -->
-                                        <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example2">Alamat Baru</label>
-                                            <textarea name="alamat_baru" id="alamat_baru" class="form-control" value=""></textarea>
+                                        <input type="hidden" name="alamat_dalam_asal" id="alamat_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}" @else value="" @endif>
+                                        <div class="col-md-6">
+                                            <!-- Email input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example2">Alamat Baru</label>
+                                                <textarea name="alamat_dalam_baru" id="alamat_baru" class="form-control" value=""></textarea>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row g-1 mt-4">
-                                    <div class="col">
-                                        <!-- Name input -->
-                                        <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example1">Kecamatan Baru</label>
-                                            <select id="kode_kecamatan_pindah" name="kode_kecamatan_pindah" class="form-control">
-                                                @php
-                                                $kecamatan = \App\Models\Kecamatan::all();
-                                                @endphp
-                                                <option value="">Pilih</option>
-                                                @foreach($kecamatan as $val)
-                                                <option value="{{ $val->code_kecamatan }}">{{ $val->kecamatan }}</option>
-                                                @endforeach
-                                            </select>
+                                    <div class="row g-1 mt-4">
+                                        <div class="col">
+                                            <!-- Name input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example1">Kecamatan Baru</label>
+                                                <select id="kode_kecamatan_pindah" name="kode_kecamatan_pindah" class="form-control">
+                                                    @php
+                                                    $kecamatan = \App\Models\Kecamatan::all();
+                                                    @endphp
+                                                    <option value="">Pilih</option>
+                                                    @foreach($kecamatan as $val)
+                                                    <option value="{{ $val->code_kecamatan }}">{{ $val->kecamatan }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col">
-                                        <!-- Name input -->
-                                        <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example1">Desa Baru</label>
-                                            <select name="kode_desa_pindah" id="kode_desa_pindah" class="form-control">
+                                        <div class="col">
+                                            <!-- Name input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example1">Desa Baru</label>
+                                                <select name="kode_desa_pindah" id="kode_desa_pindah" class="form-control">
 
-                                            </select>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row g-1 mt-4">
-                                    <!-- <div class="col">
+                                    <div class="row g-1 mt-4">
+                                        <!-- <div class="col">
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example1">RT Asal</label>
                                             <input type="text" name="rt_asal" id="rt_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif/>
                                         </div>
                                     </div> -->
-                                    <input type="hidden" name="rw_asal" id="rw_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->rw_baru : $penduduk->no_rw }}" @else value="" @endif />
-                                    <input type="hidden" name="rt_asal" id="rt_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif />
-                                    <div class="col">
-                                        <!-- Name input -->
-                                        <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example1">RT Baru</label>
-                                            <input type="text" name="rt_baru" id="rt_baru" class="form-control" value="" />
+                                        <input type="hidden" name="rw_asal" id="rw_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->rw_baru : $penduduk->no_rw }}" @else value="" @endif />
+                                        <input type="hidden" name="rt_asal" id="rt_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif />
+                                        <div class="col">
+                                            <!-- Name input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example1">RT Baru</label>
+                                                <input type="text" name="rt_dalam_baru" id="rt_baru" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <!-- Email input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example2">RW Baru</label>
+                                                <input type="text" name="rw_dalam_baru" id="rw_baru" class="form-control" value="" />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col">
-                                        <!-- Email input -->
-                                        <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example2">RW Baru</label>
-                                            <input type="text" name="rw_baru" id="rw_baru" class="form-control" value="" />
+                                    <div class="row g-1 mt-4">
+                                        <div class="col">
+                                            <!-- Name input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example1">Tanggal Pindah</label>
+                                                <input type="date" name="tanggal_dalam_pindah" id="tanggal_pindah" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-1 mt-4" id="form-keterangan">
+                                        <div class="col">
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example2">Keterangan Pindah</label>
+                                                <textarea name="keterangan" id="keterangan" class="form-control" value=""></textarea>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row g-1 mt-4">
-                                    <div class="col">
-                                        <!-- Name input -->
+                                <div id="luar-kabupaten" style="display: none">
+                                    <div class="row g-1 mt-4">
+                                        <!-- <div class="col">
                                         <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example1">Tanggal Pindah</label>
-                                            <input type="date" name="tanggal_pindah" id="tanggal_pindah" class="form-control" value="" />
+                                            <label class="form-label font-weight-bold" for="form9Example1">Alamat Asal</label>
+                                            <textarea name="alamat_asal" id="alamat_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}" @else value="" @endif>@if($penduduk) {{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}@endif</textarea>
+                                        </div>
+                                    </div> -->
+                                        <input type="hidden" name="alamat_asal" id="alamat_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->alamat_baru : $penduduk->alamat }}" @else value="" @endif>
+                                        <div class="col-md-6">
+                                            <!-- Email input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example2">Alamat Baru</label>
+                                                <textarea name="alamat_baru" id="alamat_baru" class="form-control" value=""></textarea>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row g-1 mt-4" id="form-keterangan">
-                                    <div class="col">
+                                    <div class="row g-1 mt-4">
+                                        <!-- <div class="col">
                                         <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example2">Keterangan Pindah</label>
-                                            <textarea name="keterangan" id="keterangan" class="form-control" value=""></textarea>
+                                            <label class="form-label font-weight-bold" for="form9Example1">RT Asal</label>
+                                            <input type="text" name="rt_asal" id="rt_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif/>
+                                        </div>
+                                    </div> -->
+                                        <input type="hidden" name="rw_asal" id="rw_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->rw_baru : $penduduk->no_rw }}" @else value="" @endif />
+                                        <input type="hidden" name="rt_asal" id="rt_asal" class="form-control" @if($penduduk) value="{{ $status_pindah ? $status_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif />
+                                        <div class="col">
+                                            <!-- Name input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example1">RT Baru</label>
+                                                <input type="text" name="rt_baru" id="rt_baru" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <!-- Email input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example2">RW Baru</label>
+                                                <input type="text" name="rw_baru" id="rw_baru" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-1 mt-4">
+                                        <div class="col">
+                                            <!-- Name input -->
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example1">Tanggal Pindah</label>
+                                                <input type="date" name="tanggal_pindah" id="tanggal_pindah" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-1 mt-4" id="form-keterangan">
+                                        <div class="col">
+                                            <div class="form-outline">
+                                                <label class="form-label font-weight-bold" for="form9Example2">Keterangan Pindah</label>
+                                                <textarea name="keterangan" id="keterangan" class="form-control" value=""></textarea>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div id="form-meninggal" class="mt-4 border-top" @if(!$penduduk || $penduduk->status != 'meninggal') style="display: none;" @endif>
+                            <div id="form-meninggal" class="mt-4 border-top" @if(!$penduduk || request()->edit != null || request()->status == 'pindah') style="display: none;" @endif>
                                 <h4 class="header-title mt-0 mb-1 mt-4">Informasi Meninggal</h4>
                                 @php
                                 if($penduduk){
@@ -392,7 +465,7 @@
 @push('scripts')
 <!-- <script src="{{ asset('assets/js/validate.min.js') }}"></script> -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script> -->
 <script>
     $(document).ready(function() {
         $('body').on('change', '#form-status', function() {
@@ -472,6 +545,17 @@
                 })
             })
         })
+    })
+
+    $('body').on('click', '.pindah', function() {
+        var data = $(this).val()
+        if (data == 'dalam') {
+            $('#dalam-kabupaten').show()
+            $('#luar-kabupaten').hide()
+        } else if (data == 'luar') {
+            $('#luar-kabupaten').show()
+            $('#dalam-kabupaten').hide()
+        }
     })
 </script>
 <script>
