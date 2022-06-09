@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PendudukController extends Controller
 {
@@ -27,19 +28,68 @@ class PendudukController extends Controller
             }
         } else {
             if ($request["nik"] || $request["jenis_kelamin"] || $request["status"]) {
-                $data["penduduk"] = \App\Models\Penduduk::where('nik', $request["nik"])
-                    ->orWhere('jenis_kelamin', $request["jenis_kelamin"])
-                    ->orWhere('status', $request["status"])
-                    ->orderBy('id', 'desc')
-                    ->where('kode_desa', Auth::user()->kode_desa)
+                $data["penduduk"] = DB::table('penduduks as a')
+                    ->select(
+                        'a.id',
+                        'a.nik',
+                        'a.no_kk',
+                        'a.nama_lengkap',
+                        'a.tempat_lahir',
+                        'a.jenis_kelamin',
+                        'a.jenis_kelamin',
+                        'a.hubungan_keluarga',
+                        'a.alamat',
+                        'a.no_rt',
+                        'a.no_rw',
+                        'a.kode_desa',
+                        'a.kelurahan',
+                        'a.kode_kecamatan',
+                        'a.kecamatan',
+                        'a.status',
+                        'pddk_akhir',
+                        'pekerjaan',
+                        'agama',
+                        'keterangan'
+                    )
+                    ->leftJoin('penduduk_pindah as b', 'a.nik', 'b.nik')
+                    ->where('a.kode_desa', Auth::user()->kode_desa)
+                    ->where('a.nik', $request["nik"])
+                    ->orWhere('a.jenis_kelamin', $request["jenis_kelamin"])
+                    ->orWhere('a.status', $request["status"])
+                    ->orWhere('b.kode_desa', Auth::user()->kode_desa)
+                    ->orderBy('a.id', 'desc')
                     ->paginate(20);
             } else {
-                $data["penduduk"] = \App\Models\Penduduk::orderBy('id', 'desc')
-                    ->where('kode_desa', Auth::user()->kode_desa)
+                $data["penduduk"] = DB::table('penduduks as a')
+                    ->select(
+                        'a.id',
+                        'a.nik',
+                        'a.no_kk',
+                        'a.nama_lengkap',
+                        'a.tempat_lahir',
+                        'a.jenis_kelamin',
+                        'a.jenis_kelamin',
+                        'a.hubungan_keluarga',
+                        'a.alamat',
+                        'a.no_rt',
+                        'a.no_rw',
+                        'a.kode_desa',
+                        'a.kelurahan',
+                        'a.kode_kecamatan',
+                        'a.kecamatan',
+                        'a.status',
+                        'pddk_akhir',
+                        'pekerjaan',
+                        'agama',
+                        'keterangan'
+                    )
+                    ->leftJoin('penduduk_pindah as b', 'a.nik', 'b.nik')
+                    ->where('a.kode_desa', Auth::user()->kode_desa)
+                    ->orWhere('b.kode_desa', Auth::user()->kode_desa)
+                    ->orderBy('a.id', 'desc')
                     ->paginate(20);
             }
         }
-
         return view('penduduk.index', $data);
     }
 

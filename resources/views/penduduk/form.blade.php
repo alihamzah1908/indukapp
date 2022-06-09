@@ -39,14 +39,21 @@
                                 @endif
                             </div>
                             <div class="row g-1 mt-4">
-                                <div class="col-md-4">
+                                <div class="col">
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">NIK</label>
                                         <input type="number" minlength="16" name="nik" id="nik" class="form-control" placeholder="isi dengan nik" value="{{ $penduduk ? $penduduk->nik : '' }}" @if(request()->nik) disabled @endif/>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col">
+                                    <!-- Name input -->
+                                    <div class="form-outline">
+                                        <label class="form-label font-weight-bold" for="form9Example1">No KK</label>
+                                        <input type="number" minlength="16" name="kk" id="kk" class="form-control" value="{{ $penduduk ? $penduduk->no_kk : '' }}" />
+                                    </div>
+                                </div>
+                                <div class="col">
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Nama Lengkap</label>
@@ -55,13 +62,6 @@
                                 </div>
                             </div>
                             <div class="row g-1 mt-4">
-                                <div class="col">
-                                    <!-- Name input -->
-                                    <div class="form-outline">
-                                        <label class="form-label font-weight-bold" for="form9Example1">No KK</label>
-                                        <input type="number" minlength="16" name="kk" id="kk" class="form-control" value="{{ $penduduk ? $penduduk->no_kk : '' }}" />
-                                    </div>
-                                </div>
                                 <div class="col">
                                     <!-- Name input -->
                                     <div class="form-outline">
@@ -76,8 +76,7 @@
                                         <input type="text" name="tanggal_lahir" id="tanggal_lahir" class="form-control" value="{{ $penduduk ? $penduduk->tanggal_lahir : '' }}" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row g-1 mt-4">
+                                
                                 <div class="col">
                                     <!-- Name input -->
                                     <div class="form-outline">
@@ -89,6 +88,8 @@
                                         </select>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row g-1 mt-4">
                                 <div class="col">
                                     <!-- Name input -->
                                     <div class="form-outline">
@@ -121,6 +122,13 @@
                                             <option value="Lainnya" @if($penduduk) {{ $penduduk->hubungan_keluarga == 'Lainnya' ? ' selected' : '' }}@endif>Lainnya</option>
                                         </select>
                                         <!-- <input type="text" name="hubungan_keluarga" id="hubungan_keluarga" class="form-control" value="{{ $penduduk ? $penduduk->hubungan_keluarga : '' }}" /> -->
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <!-- Email input -->
+                                    <div class="form-outline">
+                                        <label class="form-label font-weight-bold" for="form9Example2">Pendidikan Terakhir</label>
+                                        <input type="text" name="pendidikan_terakhir" id="pendidikan_terakhir" class="form-control" value="{{ $penduduk ? $penduduk->pddk_akhir : '' }}" />
                                     </div>
                                 </div>
                             </div>
@@ -382,8 +390,8 @@
 </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('assets/js/validate.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!-- <script src="{{ asset('assets/js/validate.min.js') }}"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 <script>
     $(document).ready(function() {
