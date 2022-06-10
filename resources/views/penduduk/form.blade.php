@@ -1,5 +1,10 @@
 @extends('layout.master')
 @section('content')
+<style>
+    form .error {
+        color: #990073;
+    }
+</style>
 <div class="row">
     <div class="col-md-12">
         <nav aria-label="breadcrumb" class="float-right mt-1">
@@ -18,7 +23,6 @@
             }else{
             $action = route("penduduk.add");
             }
-
             @endphp
             <form action="{{ $action }}" method="post" id="form-penduduk">
                 @csrf
@@ -53,7 +57,9 @@
                                         <input type="number" minlength="16" name="kk" id="kk" class="form-control" value="{{ $penduduk ? $penduduk->no_kk : '' }}" />
                                     </div>
                                 </div>
-                                <div class="col">
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Nama Lengkap</label>
@@ -463,9 +469,6 @@
 </div>
 @endsection
 @push('scripts')
-<!-- <script src="{{ asset('assets/js/validate.min.js') }}"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script> -->
 <script>
     $(document).ready(function() {
         $('body').on('change', '#form-status', function() {
@@ -567,12 +570,27 @@
         rules: {
             nik: {
                 required: true,
-                maxlength: 16
             },
             kk: {
                 required: true,
-                maxlength: 16
+            },
+            nama_lengkap: {
+                required: true,
             }
+        },
+        messages: {
+            nik: {
+                required: "Mohon isi NIK",
+                maxlength: 16
+            },
+            kk: {
+                required: "Mohon isi nomor KK",
+                maxlength: 16
+            },
+            nama_lengkap: "Mohon isi nama lengkap"
+        },
+        submitHandler: function(form) {
+            form.submit();
         }
     });
 </script>

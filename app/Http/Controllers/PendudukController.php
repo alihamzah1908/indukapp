@@ -46,10 +46,12 @@ class PendudukController extends Controller
                         'a.kode_kecamatan',
                         'a.kecamatan',
                         'a.status',
-                        'pddk_akhir',
-                        'pekerjaan',
-                        'agama',
-                        'keterangan'
+                        'a.pddk_akhir',
+                        'a.pekerjaan',
+                        'a.agama',
+                        'a.keterangan',
+                        'b.kode_desa',
+                        'b.kode_desa as kode_desa_baru'
                     )
                     ->leftJoin('penduduk_pindah as b', 'a.nik', 'b.nik')
                     ->where('a.kode_desa', Auth::user()->kode_desa)
@@ -78,10 +80,11 @@ class PendudukController extends Controller
                         'a.kode_kecamatan',
                         'a.kecamatan',
                         'a.status',
-                        'pddk_akhir',
-                        'pekerjaan',
-                        'agama',
-                        'keterangan'
+                        'a.pddk_akhir',
+                        'a.pekerjaan',
+                        'a.agama',
+                        'a.keterangan',
+                        'b.kode_desa as kode_desa_baru'
                     )
                     ->leftJoin('penduduk_pindah as b', 'a.nik', 'b.nik')
                     ->where('a.kode_desa', Auth::user()->kode_desa)

@@ -11,16 +11,16 @@
                         <label class="form-label font-weight-bold" for="form9Example2">Status</label>
                         <select name="status" class="form-control">
                             <option value="">Pilih</option>
-                            <option value="meninggal">Meninggal</option>
-                            <option value="pindah">Pindah</option>
+                            <option value="meninggal"{{ request()->status == 'meninggal' ? ' selected' : ''}}>Meninggal</option>
+                            <option value="pindah"{{ request()->status == 'pindah' ? ' selected' : ''}}>Pindah</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label font-weight-bold" for="form9Example2">Jenis Kelamin</label>
                         <select name="jenis_kelamin" class="form-control">
                             <option value="">Pilih</option>
-                            <option value="1">Laki - Laki</option>
-                            <option value="2">Perempuan</option>
+                            <option value="Laki-laki"{{ request()->jenis_kelamin == 'Laki-laki' ? ' selected' : ''}}>Laki - Laki</option>
+                            <option value="Perempuan"{{ request()->jenis_kelamin == 'Perempuan' ? ' selected' : ''}}>Perempuan</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -71,6 +71,10 @@
                                 @if($val->status == 'meninggal')
                                 <span class="badge badge-danger">
                                     {{ ucfirst($val->status) }}
+                                </span>
+                                @elseif(Auth::user()->role != 'super admin' && $val->status == 'pindah' && $val->kode_desa_baru == Auth::user()->kode_desa)
+                                <span class="badge badge-success">
+                                    Datang
                                 </span>
                                 @elseif($val->status == 'pindah')
                                 <span class="badge badge-primary">
