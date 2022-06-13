@@ -27,8 +27,9 @@
                         <label class="form-label font-weight-bold" for="form9Example2">NIK</label>
                         <input type="text" name="nik" class="form-control" value="{{ request()->nik }}" />
                     </div>
-                    <div class="col-md-2 d-flex justify-content-end">
+                    <div class="col-md-3 d-flex justify-content-end">
                         <button class="btn btn-primary-custom btn-rounded mt-4" type="submit">Cari</button>
+                        <button class="btn btn-primary btn-rounded mt-4 ml-2" type="reset">Reset</button>
                     </div>
                 </div>
             </form>
@@ -42,7 +43,7 @@
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
                     <a href="{{ route('penduduk.form') }}">
-                        <button class="btn btn-sm btn-primary-custom btn-rounded">Tambah Data</button>
+                        <button class="btn btn-sm btn-success btn-rounded">Tambah Data</button>
                     </a>
                 </div>
             </div>
@@ -50,10 +51,11 @@
                 <div class="table-responsive">
                     <table class="table table-striped mb-0">
                         <tr>
-                            <th>Nik</th>
+                            <th>NIK</th>
                             <th>No KK</th>
                             <th>Nama Lengkap</th>
                             <th>Tempat Lahir</th>
+                            <th>Tanggal Lahir</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -67,6 +69,7 @@
                             <td>{{ $val->no_kk }}</td>
                             <td>{{ $val->nama_lengkap }}</td>
                             <td>{{ $val->tempat_lahir }}</td>
+                            <td>{{ $val->tanggal_lahir }}</td>
                             <td>
                                 @if($val->status == 'meninggal')
                                 <span class="badge badge-danger">

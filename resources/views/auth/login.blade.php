@@ -30,7 +30,7 @@
     <div class="account-pages my-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-xl-6">
+                <div class="col-xl-5">
                     <div class="card">
                         <div class="card-body p-0">
                             <div class="row">

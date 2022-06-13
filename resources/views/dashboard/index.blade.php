@@ -8,29 +8,29 @@
 
 <!-- content -->
 <div class="row">
-    <div class="col-md-6 col-xl-3">
+    <div class="col-md-6 col-xl-4">
         <div class="card">
             <div class="card-body p-0">
                 <div class="media p-3">
                     <div class="media-body">
                         <span class="text-muted text-uppercase font-size-12 font-weight-bold">Jumlah Penduduk</span>
-                        <h2 class="mb-0">{{ \App\Models\Penduduk::count() }}</h2>
+                        <h2 class="mb-0" id="jumlah-penduduk"></h2>
                     </div>
                     <div class="align-self-center">
-                        <div id="today-revenue-chart" class="apex-charts"></div>
+                        <!-- <div id="today-revenue-chart" class="apex-charts"></div> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6 col-xl-3">
+    <div class="col-md-6 col-xl-4">
         <div class="card">
             <div class="card-body p-0">
-                <div class="media p-3">
+                <div class="media p-3" style="background-color: #d5e1f6ff">
                     <div class="media-body">
-                        <span class="text-muted text-uppercase font-size-12 font-weight-bold">Meninggal</span>
-                        <h2 class="mb-0">{{ \App\Models\Penduduk::where('status','meninggal')->count() }}</h2>
+                        <span class="text-muted text-uppercase font-size-12 font-weight-bold">Laki - Laki</span>
+                        <h2 class="mb-0" id="laki-laki"></h2>
                     </div>
                     <div class="align-self-center">
                         <div id="today-product-sold-chart" class="apex-charts"></div>
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="col-md-6 col-xl-3">
+    <!-- <div class="col-md-6 col-xl-3">
         <div class="card">
             <div class="card-body p-0">
                 <div class="media p-3">
@@ -57,15 +57,15 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
-    <div class="col-md-6 col-xl-3">
+    <div class="col-md-6 col-xl-4">
         <div class="card">
             <div class="card-body p-0">
-                <div class="media p-3">
+                <div class="media p-3" style="background-color: #fbc4ebff">
                     <div class="media-body">
-                        <span class="text-muted text-uppercase font-size-12 font-weight-bold">Pindah</span>
-                        <h2 class="mb-0">{{ \App\Models\Penduduk::where('status','pindah')->count() }}</h2>
+                        <span class="text-muted text-uppercase font-size-12 font-weight-bold">Perempuan</span>
+                        <h2 class="mb-0" id="perempuan"></h2>
                     </div>
                     <div class="align-self-center">
                         <div id="today-new-visitors-chart" class="apex-charts"></div>
@@ -79,7 +79,7 @@
 <!-- stats + charts -->
 <div class="row">
 
-    <div class="col-xl-6">
+    <!-- <div class="col-xl-6">
         <div class="card">
             <div class="card-body pb-0">
                 <ul class="nav card-nav float-right">
@@ -104,15 +104,46 @@
                 <div id="revenue-chart" class="apex-charts mt-3" dir="ltr"></div>
             </div>
         </div>
-    </div>
-    <div class="col-xl-6">
+    </div> -->
+    <!-- <div class="col-xl-6">
         <div class="card">
             <div class="card-body pb-0">
                 <h5 class="card-title mt-0 mb-0 header-title">Jenis Kelamin</h5>
                 <div id="sales-by-category-chart" class="apex-charts mb-0 mt-4" dir="ltr"></div>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 @endsection
 <!-- end row -->
+@push('scripts')
+<script>
+    $(document).ready(function(){
+
+        // get data jenis kelamin
+        $.ajax({
+            url: '{{ route("data.jenis_kelamin") }}',
+            dataType: 'json',
+            method: 'get'
+        }).done(function(response){
+            $.each(response, function(index, value){
+                if(value.jenis_kelamin == 'Laki-laki'){
+                    $("#laki-laki").html(response[0].jumlah)
+                }else if(value.jenis_kelamin == 'Perempuan'){
+                    $("#perempuan").html(response[1].jumlah)
+                }
+            })
+        })
+
+        // get data jumlah penduduk
+        $.ajax({
+            url: '{{ route("data.jumlah_penduduk") }}',
+            dataType: 'json',
+            method: 'get'
+        }).done(function(response){
+            console.log(response)
+            $("#jumlah-penduduk").html(response.jumlah)
+        })
+    })
+</script>
+@endpush

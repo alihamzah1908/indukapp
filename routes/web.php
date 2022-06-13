@@ -22,6 +22,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashbord', function () {
         return view('dashboard.index');
     })->name('dashboard');
+
+    Route::get('/data/jenis-kelamin', 'DashboardController@data_jenis_kelamin')->name('data.jenis_kelamin');
+    Route::get('/data/jumlah-penduduk', 'DashboardController@data_jumlah_penduduk')->name('data.jumlah_penduduk');
     Route::get('/penduduk', 'PendudukController@index')->name('penduduk.index');
     Route::get('/penduduk/form', 'PendudukController@create')->name('penduduk.form');
     Route::get('/penduduk/data/detail/{id}', 'PendudukController@show')->name('penduduk.detail');

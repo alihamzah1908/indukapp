@@ -161,7 +161,7 @@
                                             @if($penduduk)
                                             <option value="{{ $val->code_kecamatan }}" @if($penduduk->get_pindah){{ $val->code_kecamatan == $penduduk->get_pindah->kode_kecamatan ? ' selected' : ''}} @elseif($penduduk) {{ $val->code_kecamatan == $penduduk->kode_kecamatan ? ' selected' : ''}} @endif>{{ $val->kecamatan }}</option>
                                             @else
-                                            <option value="{{ $val->code_kecamatan }}">{{ $val->kecamatan }}</option>
+                                            <option value="{{ $val->code_kecamatan }}" {{ $val->code_kecamatan == Auth::user()->kode_kecamatan ? ' selected' : '' }}>{{ $val->kecamatan }}</option>
                                             @endif
                                             @endforeach
                                         </select>
@@ -195,18 +195,18 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">RW</label>
-                                        <input type="text" name="no_rw" id="no_rw" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rw_baru : $penduduk->no_rw }}" @else value="" @endif>
+                                        <input type="number" name="no_rw" id="no_rw" minlength="3" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rw_baru : $penduduk->no_rw }}" @else value="" @endif>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">RT</label>
-                                        <input type="text" name="no_rt" id="no_rt" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif />
+                                        <input type="number" name="no_rt" id="no_rt" minlength="3" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif />
                                     </div>
                                 </div>
                             </div>
-                            @if(request()->edit == null)
+                            @if(request()->status == 'pindah')
                             <div class="row mt-4">
                                 <div class="col-md-4">
                                     <!-- Name input -->
@@ -217,6 +217,35 @@
                                             <option value="lahir" @if($penduduk) {{ $penduduk->status == 'lahir' ? ' selected' : ''}}@endif>Lahir</option>
                                             <option value="pindah" @if($penduduk) {{ $penduduk->status == 'pindah' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Pindah</option>
                                             <option value="meninggal" @if($penduduk) {{ $penduduk->status == 'meninggal' ? ' selected' : ''}}@endif>Meninggal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            @elseif(request()->edit != null)
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <!-- Name input -->
+                                    <div class="form-outline">
+                                        <label class="form-label font-weight-bold" for="form9Example1">Status Data</label>
+                                        <select name="status" class="form-control" id="form-status" disabled>
+                                            <option value="">Pilih</option>
+                                            <option value="lahir" @if($penduduk) {{ $penduduk->status == 'lahir' ? ' selected' : ''}}@endif>Lahir</option>
+                                            <option value="pindah" @if($penduduk) {{ $penduduk->status == 'pindah' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Pindah</option>
+                                            <option value="meninggal" @if($penduduk) {{ $penduduk->status == 'meninggal' ? ' selected' : ''}}@endif>Meninggal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            @elseif(request()->edit == null)
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <!-- Name input -->
+                                    <div class="form-outline">
+                                        <label class="form-label font-weight-bold" for="form9Example1">Status Data</label>
+                                        <select name="status" class="form-control" id="form-status">
+                                            <option value="">Pilih</option>
+                                            <option value="lahir" @if($penduduk) {{ $penduduk->status == 'lahir' ? ' selected' : ''}}@endif>Lahir</option>
+                                            <option value="datang" @if($penduduk) {{ $penduduk->status == 'datang' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Datang</option>
                                         </select>
                                     </div>
                                 </div>
@@ -513,7 +542,7 @@
             })
         })
 
-        // GET KECAMATAN
+        // GET DESA 
         $('body').on('change', '#kode_kecamatan', function() {
             $('#kode_desa').html(' ')
             $.ajax({
@@ -528,6 +557,21 @@
                     var body = '<option value=' + value.code_kelurahan + '>' + value.nama_kelurahan + '</option>'
                     $('#kode_desa').append(body)
                 })
+            })
+        })
+
+        // GET DESA WITHOUT CHANGE KECAMATAN
+        $.ajax({
+            url: '{{ route("data.kecamatan") }}',
+            dataType: 'json',
+            method: 'get',
+            data: {
+                'kode_kecamatan': '{{ Auth::user()->kode_kecamatan }}'
+            }
+        }).done(function(response) {
+            $.each(response, function(index, value) {
+                var body = '<option value=' + value.code_kelurahan + '>' + value.nama_kelurahan + '</option>'
+                $('#kode_desa').append(body)
             })
         })
 
@@ -576,6 +620,12 @@
             },
             nama_lengkap: {
                 required: true,
+            },
+            no_rw: {
+                required: true,
+            },
+            no_rt: {
+                required: true,
             }
         },
         messages: {
@@ -587,7 +637,15 @@
                 required: "Mohon isi nomor KK",
                 maxlength: 16
             },
-            nama_lengkap: "Mohon isi nama lengkap"
+            nama_lengkap: "Mohon isi nama lengkap",
+            no_rw: {
+                required: "Mohon isi nomor rt",
+                maxlength: 3
+            },
+            no_rt: {
+                required: "Mohon isi nomor rw",
+                maxlength: 3
+            },
         },
         submitHandler: function(form) {
             form.submit();
