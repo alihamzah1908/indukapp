@@ -1,5 +1,10 @@
 @extends('layout.master')
 @section('content')
+<style>
+    #container {
+        width: 700px;
+    }
+</style>
 <div class="row page-title align-items-center">
     <div class="col-sm-4 col-xl-6">
         <h4 class="mb-1 mt-0">Dashboard</h4>
@@ -78,7 +83,30 @@
 
 <!-- stats + charts -->
 <div class="row">
-
+    <div class="col-md-8">
+        <div id="loading"></div>
+        <figure class="highcharts-figure">
+            <div id="container"></div>
+        </figure>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table" id="agama">
+                        <thead>
+                            <tr>
+                                <th>Agama</th>
+                                <th>Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- <div class="col-xl-6">
         <div class="card">
             <div class="card-body pb-0">
@@ -117,21 +145,42 @@
 @endsection
 <!-- end row -->
 @push('scripts')
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
 
         // get data jenis kelamin
         $.ajax({
             url: '{{ route("data.jenis_kelamin") }}',
             dataType: 'json',
             method: 'get'
-        }).done(function(response){
-            $.each(response, function(index, value){
-                if(value.jenis_kelamin == 'Laki-laki'){
+        }).done(function(response) {
+            $.each(response, function(index, value) {
+                if (value.jenis_kelamin == 'Laki-laki') {
                     $("#laki-laki").html(response[0].jumlah)
-                }else if(value.jenis_kelamin == 'Perempuan'){
+                } else if (value.jenis_kelamin == 'Perempuan') {
                     $("#perempuan").html(response[1].jumlah)
                 }
+            })
+        })
+
+        // get data agama
+        $.ajax({
+            url: '{{ route("data.agama") }}',
+            dataType: 'json',
+            method: 'get'
+        }).done(function(response) {
+            $.each(response, function(index, value) {
+                var body = '<tr>'
+                body += '<td>' + value.agama + '</td>'
+                body += '<td>' + value.n + '</td>'
+                body += '</tr>'
+                $("#agama").append(body)
             })
         })
 
@@ -140,9 +189,77 @@
             url: '{{ route("data.jumlah_penduduk") }}',
             dataType: 'json',
             method: 'get'
-        }).done(function(response){
+        }).done(function(response) {
             console.log(response)
             $("#jumlah-penduduk").html(response.jumlah)
+        })
+
+        //  DASHBOARD
+        $.ajax({
+            url: '{{ route("data.umur") }}',
+            dataType: 'json',
+            method: 'get',
+            beforeSend: function(){
+                $("#loading").html('Loading ....')
+            },
+        }).done(function(response) {
+            $("#loading").html(' ')
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    align: 'left',
+                    text: 'Penduduk Menurut Umur'
+                },
+                subtitle: {
+                    align: 'left',
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y}'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                },
+
+                series: [{
+                    name: "",
+                    colorByPoint: true,
+                    data:response
+                }],
+                drilldown: {
+                    breadcrumbs: {
+                        position: {
+                            align: 'right'
+                        }
+                    },
+                }
+            });
         })
     })
 </script>

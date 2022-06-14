@@ -56,6 +56,7 @@
                             <th>Nama Lengkap</th>
                             <th>Tempat Lahir</th>
                             <th>Tanggal Lahir</th>
+                            <th>Jenis Kelamin</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -69,7 +70,8 @@
                             <td>{{ $val->no_kk }}</td>
                             <td>{{ $val->nama_lengkap }}</td>
                             <td>{{ $val->tempat_lahir }}</td>
-                            <td>{{ $val->tanggal_lahir }}</td>
+                            <td>{{ $val->tanggal_lahir != '' || $val->tanggal_lahir != null ? date('d M Y', strtotime($val->tanggal_lahir)) : '' }}</td>
+                            <td>{{ $val->jenis_kelamin == 'Laki-laki' ? 'L' : 'P' }}</td>
                             <td>
                                 @if($val->status == 'meninggal')
                                 <span class="badge badge-danger">
@@ -97,8 +99,11 @@
                                             </svg></i>
                                     </button>
                                     <div class="dropdown-menu" role="menu">
-                                    <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&edit={{$val->id}}">Edit</a>
+                                        @if($val->status != 'meninggal')
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&edit={{$val->id}}">Edit</a>
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah">Pindah</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=meninggal">Form Meninggal</a>
+                                        @endif
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.detail', $val->id) }}">Detail</a>
                                     </div>
                                 </div>

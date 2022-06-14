@@ -21,9 +21,11 @@ class PendudukController extends Controller
                     ->orWhere('jenis_kelamin', $request["jenis_kelamin"])
                     ->orWhere('status', $request["status"])
                     ->orderBy('id', 'desc')
+                    ->orderBy('status', 'desc')
                     ->paginate(20);
             } else {
                 $data["penduduk"] = \App\Models\Penduduk::orderBy('id', 'desc')
+                    ->orderBy('a.status', 'desc')
                     ->paginate(20);
             }
         } else {
@@ -60,6 +62,7 @@ class PendudukController extends Controller
                     ->orWhere('a.status', $request["status"])
                     ->orWhere('b.kode_desa', Auth::user()->kode_desa)
                     ->orderBy('a.id', 'desc')
+                    ->orderBy('a.status', 'desc')
                     ->paginate(20);
             } else {
                 $data["penduduk"] = DB::table('penduduks as a')
@@ -262,12 +265,14 @@ class PendudukController extends Controller
                     $arr = new \App\Models\PendudukMeninggal();
                     $arr->nik = $request["nik"];
                     $arr->alamat = $request["alamat_meninggal"];
+                    $arr->tempat_disemayamkan = $request["tempat_disemayamkan"];
                     $arr->tanggal_meninggal = $request["tanggal_meninggal"];
                     $arr->save();
                 } else {
                     $arr = \App\Models\PendudukMeninggal::findOrFail($pindah->id);
                     $arr->nik = $request["nik"];
                     $arr->alamat = $request["alamat_meninggal"];
+                    $arr->tempat_disemayamkan = $request["tempat_disemayamkan"];
                     $arr->tanggal_meninggal = $request["tanggal_meninggal"];
                     $arr->save();
                 }

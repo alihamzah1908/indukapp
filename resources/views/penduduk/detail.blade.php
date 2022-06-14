@@ -245,10 +245,19 @@
                                     <div class="col">
                                         <!-- Name input -->
                                         <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example1">Alamat Meninggal</label>
+                                            <label class="form-label font-weight-bold" for="form9Example1">Tempat Meninggal</label>
                                             <p>{{ $status_meninggal ? $status_meninggal->alamat : '' }}</p>
                                         </div>
                                     </div>
+                                    <div class="col">
+                                        <!-- Name input -->
+                                        <div class="form-outline">
+                                            <label class="form-label font-weight-bold" for="form9Example1">Tempat Disemayamkan</label>
+                                            <p>{{ $status_meninggal ? $status_meninggal->tempat_disemayamkan : '' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-1 mt-4">
                                     <div class="col">
                                         <!-- Email input -->
                                         <div class="form-outline">
