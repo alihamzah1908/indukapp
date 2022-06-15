@@ -38,4 +38,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     // GET DATA KECAMATAN
     Route::get('/data/kecamatan', 'PendudukController@data_kecamatan')->name('data.kecamatan');
+    // GET CHECK NIK 
+    Route::get('/data/nik/check', 'PendudukController@check_nik')->name('check.nik');
 });

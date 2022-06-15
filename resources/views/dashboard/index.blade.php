@@ -2,12 +2,12 @@
 @section('content')
 <style>
     #container {
-        width: 700px;
+        max-width: 100%;
     }
 </style>
 <div class="row page-title align-items-center">
     <div class="col-sm-4 col-xl-6">
-        <h4 class="mb-1 mt-0">Dashboard</h4>
+        <h4 class="mb-1 mt-0">DASHBOARD ANALYTICS DATA KEPENDUDUKAN KABUPATEN CIAMIS</h4>
     </div>
 </div>
 
@@ -91,7 +91,7 @@
     </div>
     <div class="col-md-4">
         <div class="card">
-            <div class="card-body p-0">
+            <div class="card-body p-0" style="height: 400px;">
                 <div class="table-responsive">
                     <table class="table" id="agama">
                         <thead>
@@ -154,7 +154,7 @@
 <script>
     $(document).ready(function() {
 
-        // get data jenis kelamin
+        // GET DATA JENIS KELAMIN
         $.ajax({
             url: '{{ route("data.jenis_kelamin") }}',
             dataType: 'json',
@@ -169,28 +169,83 @@
             })
         })
 
-        // get data agama
+        // GET DATA AGAMA
         $.ajax({
             url: '{{ route("data.agama") }}',
             dataType: 'json',
             method: 'get'
         }).done(function(response) {
-            $.each(response, function(index, value) {
+            var session = '{{ Auth::user()->role }}'
+            if (session == 'super admin') {
+                console.log('ok')
                 var body = '<tr>'
-                body += '<td>' + value.agama + '</td>'
-                body += '<td>' + value.n + '</td>'
+                body += '<td>Islam</td>'
+                body += '<td>' + response[0].n_islam + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Kristen</td>'
+                body += '<td>' + response[1].n_kristen  + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Katholik</td>'
+                body += '<td>' + response[2].n_katholik  + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Lainya</td>'
+                body += '<td>' + response[3].n_lainya + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Kong Huchu</td>'
+                body += '<td>' + response[4].n_konghucu  + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Budha</td>'
+                body += '<td>' + response[5].n_budha + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Hindu</td>'
+                body += '<td>' + response[6].n_hindu  + '</td>'
                 body += '</tr>'
                 $("#agama").append(body)
-            })
+            } else {
+                var body = '<tr>'
+                body += '<td>Islam</td>'
+                body += '<td>' + response[0].n_islam + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Kristen</td>'
+                body += '<td>' + response[0].n_kristen + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Katholik</td>'
+                body += '<td>' +  response[0].n_katholik + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Lainya</td>'
+                body += '<td>' +  response[0].n_lainya + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Kong Huchu</td>'
+                body += '<td>' +  response[0].n_konghucu + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Budha</td>'
+                body += '<td>' + response[0].n_budha + '</td>'
+                body += '</tr>'
+                body += '<tr>'
+                body += '<td>Hindu</td>'
+                body += '<td>' +  response[0].n_hindu + '</td>'
+                body += '</tr>'
+                $("#agama").append(body)
+            }
         })
 
-        // get data jumlah penduduk
+        // GET DATA JUMLAH PENDUDUK
         $.ajax({
             url: '{{ route("data.jumlah_penduduk") }}',
             dataType: 'json',
             method: 'get'
         }).done(function(response) {
-            console.log(response)
             $("#jumlah-penduduk").html(response.jumlah)
         })
 
@@ -199,7 +254,7 @@
             url: '{{ route("data.umur") }}',
             dataType: 'json',
             method: 'get',
-            beforeSend: function(){
+            beforeSend: function() {
                 $("#loading").html('Loading ....')
             },
         }).done(function(response) {
@@ -210,7 +265,7 @@
                 },
                 title: {
                     align: 'left',
-                    text: 'Penduduk Menurut Umur'
+                    text: 'Penduduk Berdasarkan Umur'
                 },
                 subtitle: {
                     align: 'left',
@@ -250,7 +305,7 @@
                 series: [{
                     name: "",
                     colorByPoint: true,
-                    data:response
+                    data: response
                 }],
                 drilldown: {
                     breadcrumbs: {

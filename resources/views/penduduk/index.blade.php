@@ -28,8 +28,7 @@
                         <input type="text" name="nik" class="form-control" value="{{ request()->nik }}" />
                     </div>
                     <div class="col-md-3 d-flex justify-content-end">
-                        <button class="btn btn-primary-custom btn-rounded mt-4" type="submit">Cari</button>
-                        <button class="btn btn-primary btn-rounded mt-4 ml-2" type="reset">Reset</button>
+                        <button class="btn btn-primary-custom btn-rounded mt-4" type="submit"><i class="uil uil-search"></i> Cari</button>
                     </div>
                 </div>
             </form>
@@ -43,7 +42,7 @@
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
                     <a href="{{ route('penduduk.form') }}">
-                        <button class="btn btn-sm btn-success btn-rounded">Tambah Data</button>
+                        <button class="btn btn-sm btn-success btn-rounded"><i class="uil uil-plus-circle"></i> Tambah Data</button>
                     </a>
                 </div>
             </div>
@@ -85,8 +84,16 @@
                                 <span class="badge badge-primary">
                                     {{ ucfirst($val->status) }}
                                 </span>
-                                @elseif($val->status == 'lahir')
+                                @elseif($val->status == 'pindah' && $val->status_pindah == 'luar')
+                                <span class="badge badge-primary">
+                                    Pindah (Luar Ciamis)
+                                </span>
+                                @elseif($val->status == 'datang')
                                 <span class="badge badge-success">
+                                    {{ ucfirst($val->status) }}
+                                </span>
+                                @elseif($val->status == 'lahir')
+                                <span class="badge badge-warning">
                                     {{ ucfirst($val->status) }}
                                 </span>
                                 @endif
@@ -99,12 +106,12 @@
                                             </svg></i>
                                     </button>
                                     <div class="dropdown-menu" role="menu">
-                                        @if($val->status != 'meninggal')
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&edit={{$val->id}}">Edit</a>
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah">Pindah</a>
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=meninggal">Form Meninggal</a>
+                                        @if($val->status != 'meninggal' && $val->status_pindah != 'luar')
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&edit={{$val->id}}"><i class="uil uil-edit-alt"></i> Edit</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah"><i class="uil uil-car-sideview"></i> Pindah</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=meninggal"><i class="uil uil-sad-dizzy"></i> Form Meninggal</a>
                                         @endif
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.detail', $val->id) }}">Detail</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.detail', $val->id) }}"><i class="uil uil-search"></i> Detail</a>
                                     </div>
                                 </div>
                             </td>

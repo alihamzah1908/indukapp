@@ -2,9 +2,9 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <nav aria-label="breadcrumb" class="float-right mt-1">
+        <nav aria-label="breadcrumb" class="float-left mt-1">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('penduduk.index') }}">Penduduk</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('penduduk.index') }}">List Penduduk / </a></li>
             </ol>
         </nav>
     </div>
@@ -25,14 +25,14 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card-body">
-                            <div class="row">
+                            <div class="row ml-0" style="border-bottom: 1px solid #990073;">
                                 <div class="col-md-6">
-                                    <h4 class="header-title mt-0 mb-1">Form Penduduk</h4>
+                                    <h4 class="header-title mt-0 mb-1">Informasi Penduduk Saat Ini</h4>
                                 </div>
                                 @if($penduduk)
                                 @if($penduduk->status == 'pindah')
-                                <div class="col-md-6 d-flex justify-content-end">
-                                    <button type="button" class="btn btn-sm btn-primary btn-rounded" id="lihat-riwayat">Riwayat Pindah</button>
+                                <div class="col-md-6 d-flex justify-content-end mb-3">
+                                    <button type="button" class="btn btn-sm btn-primary btn-rounded" id="lihat-riwayat"><i class="uil uil-search"></i> Riwayat Pindah</button>
                                 </div>
                                 @endif
                                 @endif
@@ -125,6 +125,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @if($penduduk->get_pindah->kode_kecamatan != '' || $penduduk->get_pindah->kode_desa != '')
                             <div class="row g-1 mt-4">
                                 <div class="col">
                                     <!-- Email input -->
@@ -133,8 +134,9 @@
                                         @if($penduduk->get_pindah)
                                         @php
                                         $kecamatan = \App\Models\Kecamatan::select('kecamatan')->where('code_kecamatan', $penduduk->get_pindah->kode_kecamatan)->first();
+                                        
                                         @endphp
-                                        <p>{{ $kecamatan->kecamatan  }}</p>
+                                        <p>{{ $kecamatan != '' || $kecamatan != null ? $kecamatan->kecamatan : ''  }}</p>
                                         @else
                                         <p>{{ $penduduk->get_kecamatan->kecamatan }}</p>
                                         @endif
@@ -148,7 +150,7 @@
                                         @php
                                         $desa = \App\Models\Desa::select('nama_kelurahan')->where('code_kelurahan', $penduduk->get_pindah->kode_desa)->first();
                                         @endphp
-                                        <p>{{ $desa->nama_kelurahan }}</p>
+                                        <p>{{ $desa != '' || $desa != null ? $desa->nama_kelurahan : ''}}</p>
                                         @else
                                         <p>{{ $penduduk->get_desa ? $penduduk->get_desa->nama_kelurahan : '' }}</p>
                                         @endif
@@ -169,7 +171,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="form-pindah" class="mt-4 border-top" @if(!$penduduk || $penduduk->status != 'pindah') style="display: none;" @endif>
+                            @endif
+                            @if($penduduk->status == 'pindah')
+                            <div class="row g-1 mt-4" id="form-keterangan">
+                                <div class="col">
+                                    <div class="form-outline">
+                                        <label class="form-label font-weight-bold" for="form9Example2">Keterangan Pindah</label>
+                                        <p>{{ $penduduk ? $penduduk->keterangan : '' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            <div id="form-pindah" class="mt-4" style="border-top: 1px solid #990073;" @if(!$penduduk || $penduduk->status != 'pindah') style="display: none;" @endif>
                                 <h4 class="header-title mt-0 mb-1 mt-4">Informasi Alamat Asal</h4>
                                 @php
                                 if($penduduk){
@@ -218,14 +231,6 @@
                                         <div class="form-outline">
                                             <label class="form-label font-weight-bold" for="form9Example2">RW Asal</label>
                                             <p>{{ $penduduk ? $penduduk->no_rw : '' }} </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row g-1 mt-4" id="form-keterangan">
-                                    <div class="col">
-                                        <div class="form-outline">
-                                            <label class="form-label font-weight-bold" for="form9Example2">Keterangan</label>
-                                            <p>{{ $penduduk ? $penduduk->keterangan : '' }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -307,7 +312,6 @@
 </div>
 @endsection
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
         // LIHAT RIWAYAT PINDAH

@@ -144,7 +144,7 @@
                 <!--- Sidemenu -->
                 <div id="sidebar-menu" class="slimscroll-menu">
                     <ul class="metismenu" id="menu-bar">
-                        <li class="menu-title">Navigation</li>
+                        <li class="menu-title">ANALYTICS</li>
 
                         <li>
                             <a href="{{ route('dashboard') }}">
@@ -253,6 +253,8 @@
     <div class="rightbar-overlay"></div>
 
     <!-- Vendor js -->
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets/js/vendor.min.js') }}"></script>
 
     <!-- optional plugins -->
@@ -266,7 +268,7 @@
     <!-- App js -->
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
     <script src="{{ asset('assets/js/validate.min.js') }}"></script>
     @stack('scripts')
 </body>
