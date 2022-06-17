@@ -81,7 +81,7 @@
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Tanggal Lahir</label>
-                                        <p>{{ $penduduk ? $penduduk->tanggal_lahir : '' }}</p>
+                                        <p>{{ $penduduk ? date('d M Y', strtotime($penduduk->tanggal_lahir)) : '' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if($penduduk->get_pindah->kode_kecamatan != '' || $penduduk->get_pindah->kode_desa != '')
+                            @if($penduduk->get_pindah != '')
                             <div class="row g-1 mt-4">
                                 <div class="col">
                                     <!-- Email input -->

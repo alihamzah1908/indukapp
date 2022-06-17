@@ -165,6 +165,9 @@
                                 <li>
                                     <a href="{{ route('penduduk.index') }}"><span>Penduduk</span></a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('laporan.index') }}"><span>Laporan</span></a>
+                                </li>
                             </ul>
                         </li>
                     </ul>

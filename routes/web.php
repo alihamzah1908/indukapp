@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penduduk', 'PendudukController@index')->name('penduduk.index');
     Route::get('/penduduk/form', 'PendudukController@create')->name('penduduk.form');
     Route::get('/penduduk/data/detail/{id}', 'PendudukController@show')->name('penduduk.detail');
+    Route::get('/penduduk/laporan', 'LaporanController@index')->name('laporan.index');
     Route::post('/penduduk/update', 'PendudukController@update')->name('penduduk.update');
     Route::post('/penduduk/add', 'PendudukController@store')->name('penduduk.add');
 
@@ -40,4 +41,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/data/kecamatan', 'PendudukController@data_kecamatan')->name('data.kecamatan');
     // GET CHECK NIK 
     Route::get('/data/nik/check', 'PendudukController@check_nik')->name('check.nik');
+    Route::get('/download/data/penduduk', 'LaporanController@penduduk_export')->name('download.penduduk');
 });

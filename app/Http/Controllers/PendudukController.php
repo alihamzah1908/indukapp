@@ -251,6 +251,7 @@ class PendudukController extends Controller
                     ->where('alamat_baru', $request["alamat_baru"])
                     ->orderBy('id', 'desc')
                     ->first();
+                // dd($pindah);
                 if (!$pindah) {
                     // dd($request["nik"]);
                     $arr = new \App\Models\PendudukPindah();
@@ -263,6 +264,10 @@ class PendudukController extends Controller
                     $arr->rw_baru = $request["rw_dalam_baru"] != '' ? $request["rw_dalam_baru"] : $request["rw_baru"];
                     $arr->kode_kecamatan = $request["kode_kecamatan_pindah"];
                     $arr->kode_desa = $request["kode_desa_pindah"];
+                    $arr->kode_kecamatan_asal = $request["kode_kecamatan_asal"] != '' ? $request["kode_kecamatan_asal"] : $request["kode_kecamatan"];
+                    $arr->kode_desa_asal = $request["kode_desa_asal"] != '' ? $request["kode_desa_asal"] : $request["kode_desa"];
+                    $arr->kode_kecamatan_baru = $request["kode_kecamatan_pindah"];
+                    $arr->kode_desa_baru = $request["kode_desa_pindah"];
                     $arr->tanggal_pindah = $request["tanggal_dalam_pindah"] != '' ? $request["tanggal_dalam_pindah"] : $request["tanggal_pindah"];
                     $arr->status_pindah = $request["status_pindah"];
                     $arr->save();

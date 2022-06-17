@@ -30,19 +30,21 @@
                 <input type="hidden" name="status" value="{{ request()->status ? request()->status : '' }}" />
                 <input type="hidden" name="kode_kecamatan" value="{{ $penduduk ? $penduduk->kode_kecamatan : ''  }}" />
                 <input type="hidden" name="kode_desa" value="{{ $penduduk ? $penduduk->kode_desa : ''  }}" />
+                <input type="hidden" name="kode_desa_asal" value="{{ $penduduk && $penduduk->get_pindah != '' ? $penduduk->get_pindah->kode_desa_baru : ''  }}" />
+                <input type="hidden" name="kode_kecamatan_asal" value="{{ $penduduk && $penduduk->get_pindah != '' ? $penduduk->get_pindah->kode_kecamatan_baru : ''  }}" />
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card-body">
                             <div class="row ml-0" style="border-bottom: 1px solid #990073;">
-                                <div class="col-md-6" >
+                                <div class="col-md-6">
                                     <h4 class="header-title mt-0 mb-3">Formulir Tambah Penduduk</h4>
                                 </div>
                                 @if($penduduk)
-                                @if($penduduk->status == 'pindah')
-                                <div class="col-md-6 d-flex justify-content-end mb-4">
-                                    <button type="button" class="btn btn-sm btn-primary btn-rounded" id="lihat-riwayat"><i class="uil uil-search"></i> Riwayat Pindah</button>
-                                </div>
-                                @endif
+                                    @if($penduduk->status == 'pindah')
+                                        <div class="col-md-6 d-flex justify-content-end mb-4">
+                                            <button type="button" class="btn btn-sm btn-primary btn-rounded" id="lihat-riwayat"><i class="uil uil-search"></i> Riwayat Pindah</button>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                             <div class="row g-1 mt-4">
@@ -74,6 +76,7 @@
                                         <select name="status" class="form-control" id="form-status" disabled>
                                             <option value="">Pilih</option>
                                             <option value="lahir" @if($penduduk) {{ $penduduk->status == 'lahir' ? ' selected' : ''}}@endif>Lahir</option>
+                                            <option value="datang" @if($penduduk) {{ $penduduk->status == 'datang' ? ' selected' : ''}}@endif>Datang</option>
                                             <option value="pindah" @if($penduduk) {{ $penduduk->status == 'pindah' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Pindah</option>
                                             <option value="meninggal" @if($penduduk) {{ $penduduk->status == 'meninggal' ? ' selected' : ''}}@endif>Meninggal</option>
                                         </select>
@@ -529,6 +532,11 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        var el = document.getElementById('form-penduduk');
+        el.addEventListener('submit', function() {
+            return confirm('Apakah anda yakin menambahkan data?');
+        }, false);
+
         $('body').on('change', '#form-status', function() {
             var status = $(this).val()
             if (status == 'pindah') {

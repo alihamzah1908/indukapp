@@ -160,13 +160,10 @@
             dataType: 'json',
             method: 'get'
         }).done(function(response) {
-            $.each(response, function(index, value) {
-                if (value.jenis_kelamin == 'Laki-laki') {
-                    $("#laki-laki").html(response[0].jumlah)
-                } else if (value.jenis_kelamin == 'Perempuan') {
-                    $("#perempuan").html(response[1].jumlah)
-                }
-            })
+            var laki = response.length == '0' ? 0 : response[0].jumlah
+            $("#laki-laki").html(laki)
+            var perempuan = response.length == '0' ? 0 : response[1].jumlah
+            $("#perempuan").html(perempuan)
         })
 
         // GET DATA AGAMA
@@ -177,18 +174,17 @@
         }).done(function(response) {
             var session = '{{ Auth::user()->role }}'
             if (session == 'super admin') {
-                console.log('ok')
                 var body = '<tr>'
                 body += '<td>Islam</td>'
                 body += '<td>' + response[0].n_islam + '</td>'
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Kristen</td>'
-                body += '<td>' + response[1].n_kristen  + '</td>'
+                body += '<td>' + response[1].n_kristen + '</td>'
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Katholik</td>'
-                body += '<td>' + response[2].n_katholik  + '</td>'
+                body += '<td>' + response[2].n_katholik + '</td>'
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Lainya</td>'
@@ -196,7 +192,7 @@
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Kong Huchu</td>'
-                body += '<td>' + response[4].n_konghucu  + '</td>'
+                body += '<td>' + response[4].n_konghucu + '</td>'
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Budha</td>'
@@ -204,7 +200,7 @@
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Hindu</td>'
-                body += '<td>' + response[6].n_hindu  + '</td>'
+                body += '<td>' + response[6].n_hindu + '</td>'
                 body += '</tr>'
                 $("#agama").append(body)
             } else {
@@ -218,15 +214,15 @@
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Katholik</td>'
-                body += '<td>' +  response[0].n_katholik + '</td>'
+                body += '<td>' + response[0].n_katholik + '</td>'
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Lainya</td>'
-                body += '<td>' +  response[0].n_lainya + '</td>'
+                body += '<td>' + response[0].n_lainya + '</td>'
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Kong Huchu</td>'
-                body += '<td>' +  response[0].n_konghucu + '</td>'
+                body += '<td>' + response[0].n_konghucu + '</td>'
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Budha</td>'
@@ -234,7 +230,7 @@
                 body += '</tr>'
                 body += '<tr>'
                 body += '<td>Hindu</td>'
-                body += '<td>' +  response[0].n_hindu + '</td>'
+                body += '<td>' + response[0].n_hindu + '</td>'
                 body += '</tr>'
                 $("#agama").append(body)
             }

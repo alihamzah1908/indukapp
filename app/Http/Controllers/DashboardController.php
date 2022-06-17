@@ -66,6 +66,7 @@ class DashboardController extends Controller
         ) 
         GROUP BY range_umur 
         ORDER BY range_umur');
+        $arr = [];
         foreach ($data as $val) {
             $arrx["name"] = $val->range_umur;
             $arrx["y"] = $val->jumlah;
