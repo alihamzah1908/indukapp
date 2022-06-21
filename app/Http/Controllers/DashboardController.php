@@ -36,6 +36,67 @@ class DashboardController extends Controller
         return response()->json($arr);
     }
 
+    public function data_pendidikan(Request $request)
+    {
+        if (Auth::user()->role == 'super admin') {
+            $where = 'WHERE status != "meninggal"';
+        } else if (Auth::user()->role == 'desa' || Auth::user()->role == 'kecamatan') {
+            $where = 'WHERE status != "meninggal" AND kode_desa=' . Auth::user()->kode_desa . ' AND ' . 'kode_kecamatan=' . Auth::user()->kode_kecamatan;
+        }
+        $data = DB::select('SELECT pddk_akhir, COUNT(pddk_akhir) as jumlah 
+        FROM penduduks 
+        ' . $where . '
+        GROUP BY pddk_akhir');
+        $arr = [];
+        foreach ($data as $val) {
+            $arrx["name"] = $val->pddk_akhir;
+            $arrx["y"] = $val->jumlah;
+            $arr[] = $arrx;
+        }
+        return response()->json($arr);
+    }
+
+    public function data_pekerjaan(Request $request)
+    {
+        if (Auth::user()->role == 'super admin') {
+            $where = 'WHERE status != "meninggal" AND pekerjaan IS NOT NULL ';
+        } else if (Auth::user()->role == 'desa' || Auth::user()->role == 'kecamatan') {
+            $where = 'WHERE status != "meninggal" AND pekerjaan IS NOT NULL AND kode_desa=' . Auth::user()->kode_desa . ' AND ' . 'kode_kecamatan=' . Auth::user()->kode_kecamatan;
+        }
+        $data = DB::select('SELECT pekerjaan, COUNT(pekerjaan) as jumlah 
+        FROM penduduks 
+        ' . $where . '
+        GROUP BY pekerjaan
+        ORDER BY jumlah DESC');
+        $arr = [];
+        foreach ($data as $val) {
+            $arrx["name"] = $val->pekerjaan;
+            $arrx["y"] = $val->jumlah;
+            $arr[] = $arrx;
+        }
+        return response()->json($arr);
+    }
+
+    public function data_hubungan_keluarga(Request $request)
+    {
+        if (Auth::user()->role == 'super admin') {
+            $where = 'WHERE status != "meninggal"';
+        } else if (Auth::user()->role == 'desa' || Auth::user()->role == 'kecamatan') {
+            $where = 'WHERE status != "meninggal" AND kode_desa=' . Auth::user()->kode_desa . ' AND ' . 'kode_kecamatan=' . Auth::user()->kode_kecamatan;
+        }
+        $data = DB::select('SELECT hubungan_keluarga, COUNT(hubungan_keluarga) as jumlah 
+        FROM penduduks 
+        ' . $where . '
+        GROUP BY hubungan_keluarga');
+        $arr = [];
+        foreach ($data as $val) {
+            $arrx["name"] = $val->hubungan_keluarga;
+            $arrx["y"] = $val->jumlah;
+            $arr[] = $arrx;
+        }
+        return response()->json($arr);
+    }
+
     public function data_umur(Request $request)
     {
         if (Auth::user()->role == 'super admin') {

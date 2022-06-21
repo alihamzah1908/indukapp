@@ -47,21 +47,34 @@
                 <div class="col-md-6 d-flex justify-content-end">
                     <a href="javascript:void(0)" class="download-excel">
                         <span class="m-y-5 badge badge-pill badge-primary">
-                            <div id="loading"></div>
-                            <div id="text-button-voucher" class="text-button text-button-voucher">
-                                <i class="uil uil-file-download"></i> Export Excel
+                            <div id="loading_export"></div>
+                            <div id="text-button-voucher-export" class="text-button text-button-voucher-export">
+                                <i class="uil uil-file-download"></i> Download Laporan
                             </div>
-                            <div id="loading-wrap-voucher" class="text-center loading-wrap loading-wrap-voucher" style="display: none;">
+                            <div id="loading-wrap-voucher-export" class="text-center loading-wrap loading-wrap-voucher-export" style="display: none;">
                                 <div class="spinner-border text-light" role="status">
                                     <span class="sr-only">Loading...</span>
                                 </div>
                             </div>
                         </span>
                     </a>
-                    <a href="{{ route('penduduk.pdf') }}">
-                        <span class="m-y-5 badge badge-pill badge-danger">
-                            <div id="loading"></div>
+                    <a href="javascript:void(0)" class="download-blanko ml-2">
+                        <span class="m-y-5 badge badge-pill badge-warning">
+                            <div id="loading_blanko"></div>
                             <div id="text-button-voucher" class="text-button text-button-voucher">
+                                <i class="uil uil-file-download"></i> Download Blanko
+                            </div>
+                            <div id="loading-wrap-voucher-blanko" class="text-center loading-wrap loading-wrap-voucher-blanko" style="display: none;">
+                                <div class="spinner-border text-light" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </span>
+                    </a>
+                    <a href="{{ route('penduduk.pdf') }}{{ request()->no_rw != '' ? '?no_rw=' . request()->no_rw : '' }}" class="ml-2">
+                        <span class="m-y-5 badge badge-pill badge-danger">
+                            <div id="loading_pdf"></div>
+                            <div id="text-button-voucher-pdf" class="text-button text-button-voucher-pdf">
                                 <i class="uil uil-file-download"></i> Download PDF
                             </div>
                             <div id="loading-wrap-voucher-pdf" class="text-center loading-wrap loading-wrap-voucher-pdf" style="display: none;">
@@ -83,7 +96,7 @@
                             <th>Tempat Lahir</th>
                             <th>Tanggal Lahir</th>
                             <th>Jenis Kelamin</th>
-                            <th>Status</th>
+                            <th>Keterangan</th>
                         </tr>
                         @foreach($penduduk as $val)
                         <tr>
@@ -157,10 +170,10 @@ Data Per Halaman : {{ $penduduk->perPage() }} <br />
                     'no_rw': no_rw
                 },
                 beforeSend: function(){
-                    $("#loading").html('Loading ....')
+                    $("#loading_export").html('Loading ....')
                 },
                 success: function(data) {
-                    $("#loading").html(' ')
+                    $("#loading_export").html(' ')
                     var a = document.createElement('a');
                     var url = window.URL.createObjectURL(data);
                     a.href = url;
@@ -172,12 +185,51 @@ Data Per Halaman : {{ $penduduk->perPage() }} <br />
                     $(this).sess
                 }
             })
-            $(".loading-wrap-voucher").css("display", "block")
-            $(".text-button-voucher").css("display", "none")
+            $(".loading-wrap-voucher-export").css("display", "block")
+            $(".text-button-voucher-export").css("display", "none")
             setTimeout(function() {
                 $(this).prop('disabled', false)
-                $(".loading-wrap-voucher").css("display", "none")
-                $(".text-button-voucher").css("display", "block")
+                $(".loading-wrap-voucher-export").css("display", "none")
+                $(".text-button-voucher-export").css("display", "block")
+            }, 1000);
+        })
+
+        // GET DOWNLOAD EXCEL BLANKO
+        $('body').on('click', '.download-blanko', function() {
+            var kode = $(this).attr('data-bind')
+            var no_rw = '{{ request()->no_rw }}'
+            var url = '{{ route("penduduk.blanko") }}';
+            $.ajax({
+                url: url,
+                method: 'get',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                data: {
+                    'no_rw': no_rw
+                },
+                beforeSend: function(){
+                    $("#loading_blanko").html('Loading ....')
+                },
+                success: function(data) {
+                    $("#loading_blanko").html(' ')
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'Data-Penduduk.xlsx';
+                    document.body.append(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    $(this).sess
+                }
+            })
+            $(".loading-wrap-voucher-blanko").css("display", "block")
+            $(".text-button-voucher-blanko").css("display", "none")
+            setTimeout(function() {
+                $(this).prop('disabled', false)
+                $(".loading-wrap-voucher-blanko").css("display", "none")
+                $(".text-button-voucher-blanko").css("display", "block")
             }, 1000);
         })
     })

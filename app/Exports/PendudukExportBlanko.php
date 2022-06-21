@@ -9,12 +9,11 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-
-class PendudukExport implements FromCollection, WithHeadings, WithColumnFormatting, WithMapping
+class PendudukExportBlanko implements FromCollection, WithHeadings, WithColumnFormatting, WithMapping
 {
     /**
-     * @return \Illuminate\Support\Collection
-     */
+    * @return \Illuminate\Support\Collection
+    */
     public function __construct($no_rw)
     {
         $this->no_rw = $no_rw;
@@ -75,6 +74,20 @@ class PendudukExport implements FromCollection, WithHeadings, WithColumnFormatti
                 $data->no_rt,
                 $data->alamat,
                 $data->status
+            ],
+            [
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                ' '
             ],
         ];
         return $arr;

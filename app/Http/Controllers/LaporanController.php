@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Exports\PendudukExport;
 use PDF;
+use App\Exports\PendudukExport;
+use App\Exports\PendudukExportBlanko;
 
 class LaporanController extends Controller
 {
@@ -122,12 +123,17 @@ class LaporanController extends Controller
 
     public function penduduk_export(Request $request)
     {
-        return Excel::download(new PendudukExport($request["no_rw"]), 'siswa.xlsx');
+        return Excel::download(new PendudukExport($request["no_rw"]), 'export_excel.xlsx');
+    }
+
+    public function penduduk_blanko(Request $request)
+    {
+        return Excel::download(new PendudukExportBlanko($request["no_rw"]), 'export_blanko.xlsx');
     }
 
     public function penduduk_pdf(Request $request)
     {
-        $penduduk = DB::table('penduduks as a')
+        $data["penduduk"] = DB::table('penduduks as a')
             ->select(
                 'a.id',
                 'a.nik',
@@ -168,8 +174,9 @@ class LaporanController extends Controller
             ->orWhere('b.kode_desa', Auth::user()->kode_desa)
             ->orWhere('b.kode_desa_asal', Auth::user()->kode_desa)
             ->orderBy('a.id', 'desc')
-            ->paginate(20);
-        $pdf = PDF::loadView('laporan.pdf', compact('penduduk'));
+            ->limit(100)
+            ->get();
+        $pdf = PDF::loadView('laporan.pdf', $data);
 
         return $pdf->download('penduduk.pdf');
     }

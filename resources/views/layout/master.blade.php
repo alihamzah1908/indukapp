@@ -20,6 +20,10 @@
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/datatables/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/datatables/select.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .btn-primary-custom {
             color: #fff;
@@ -256,7 +260,7 @@
     <div class="rightbar-overlay"></div>
 
     <!-- Vendor js -->
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets/js/vendor.min.js') }}"></script>
 
@@ -269,6 +273,28 @@
     <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
 
     <!-- App js -->
+    <script src="{{ asset('assets/libs/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/responsive.bootstrap4.min.js') }}"></script>
+
+    <script src="{{ asset('assets/libs/datatables/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/buttons.flash.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/buttons.print.min.js') }}"></script>
+
+    <script src="{{ asset('assets/libs/datatables/dataTables.keyTable.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/datatables/dataTables.select.min.js') }}"></script>
+
+    <!-- Datatables init -->
+    <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->

@@ -5,9 +5,10 @@
         max-width: 100%;
     }
 </style>
+
 <div class="row page-title align-items-center">
-    <div class="col-sm-4 col-xl-6">
-        <h4 class="mb-1 mt-0">DASHBOARD ANALYTICS DATA KEPENDUDUKAN KABUPATEN CIAMIS</h4>
+    <div class="col-md-12">
+        <h4 class="mb-1 mt-0">SUMMARY REPORT DATA INFORMASI KEPENDUDUKAN KABUPATEN CIAMIS</h4>
     </div>
 </div>
 
@@ -142,18 +143,79 @@
         </div>
     </div> -->
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <div id="loading"></div>
+        <figure class="highcharts-figure">
+            <div id="container2"></div>
+        </figure>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <!-- <div id="loading"></div>
+        <figure class="highcharts-figure">
+            <div id="container3"></div>
+        </figure> -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="header-title mt-0 mb-1">Penduduk Menurut Pekerjaan</h4>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Pekerjaan</th>
+                                    <th>Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                if (Auth::user()->role == 'super admin') {
+                                    $where = 'WHERE status != "meninggal" AND pekerjaan IS NOT NULL ';
+                                } else if (Auth::user()->role == 'desa' || Auth::user()->role == 'kecamatan') {
+                                    $where = 'WHERE status != "meninggal" AND pekerjaan IS NOT NULL AND kode_desa=' . Auth::user()->kode_desa . ' AND ' . 'kode_kecamatan=' . Auth::user()->kode_kecamatan;
+                                }
+                                $data = DB::select('SELECT pekerjaan, COUNT(pekerjaan) as jumlah
+                                    FROM penduduks
+                                    ' . $where . '
+                                    GROUP BY pekerjaan
+                                    ORDER BY jumlah DESC')
+                                @endphp
+                                @foreach($data as $val)
+                                <tr>
+                                    <td>{{ $val->pekerjaan }}</td>
+                                    <td>{{ $val->jumlah }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div id="loading"></div>
+        <figure class="highcharts-figure">
+            <div id="container4"></div>
+        </figure>
+    </div>
+</div>
 @endsection
 <!-- end row -->
 @push('scripts')
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/data.js"></script>
-<script src="https://code.highcharts.com/modules/drilldown.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script>
     $(document).ready(function() {
-
+        $("#datatable").DataTable({
+            order: [[1, 'desc']],
+        })
         // GET DATA JENIS KELAMIN
         $.ajax({
             url: '{{ route("data.jenis_kelamin") }}',
@@ -245,7 +307,7 @@
             $("#jumlah-penduduk").html(response.jumlah)
         })
 
-        //  DASHBOARD
+        //  DASHBOARD UMUR
         $.ajax({
             url: '{{ route("data.umur") }}',
             dataType: 'json',
@@ -262,6 +324,257 @@
                 title: {
                     align: 'left',
                     text: 'Penduduk Berdasarkan Umur'
+                },
+                subtitle: {
+                    align: 'left',
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y}'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                },
+
+                series: [{
+                    name: "",
+                    colorByPoint: true,
+                    data: response
+                }],
+                drilldown: {
+                    breadcrumbs: {
+                        position: {
+                            align: 'right'
+                        }
+                    },
+                }
+            });
+        })
+
+        //  DASHBOARD PENDIDIKAN
+        $.ajax({
+            url: '{{ route("data.pendidikan") }}',
+            dataType: 'json',
+            method: 'get',
+            beforeSend: function() {
+                $("#loading").html('Loading ....')
+            },
+        }).done(function(response) {
+            var name = []
+            var jumlah = []
+            $.each(response, function(index, value){
+                name.push(value.name)
+                jumlah.push(value.y)
+            })
+            $("#loading").html(' ')
+            Highcharts.chart('container2', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    align: 'left',
+                    text: 'Penduduk Menurut Tingkat Pendidikan '
+                },
+                subtitle: {
+                    align: 'left',
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y}'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                },
+
+                series: [{
+                    name: "",
+                    colorByPoint: true,
+                    data: [
+                        {
+                            name: name[9],
+                            y: jumlah[9],
+                        },
+                        {
+                            name: name[8],
+                            y: jumlah[8],
+                        },
+                        {
+                            name: name[7],
+                            y: jumlah[7],
+                        },
+                        {
+                            name: name[4],
+                            y: jumlah[4],
+                        },
+                        {
+                            name: name[3],
+                            y: jumlah[3],
+                        },
+                        {
+                            name: name[1],
+                            y: jumlah[1],
+                        },
+                        {
+                            name: name[0],
+                            y: jumlah[0],
+                        },
+                        {
+                            name: name[2],
+                            y: jumlah[2],
+                        },
+                        {
+                            name: name[5],
+                            y: jumlah[5],
+                        },
+                        {
+                            name: name[6],
+                            y: jumlah[6],
+                        },
+                    ]
+                }],
+                drilldown: {
+                    breadcrumbs: {
+                        position: {
+                            align: 'right'
+                        }
+                    },
+                }
+            });
+        })
+
+        //  DASHBOARD PEKERJAAN
+        $.ajax({
+            url: '{{ route("data.pekerjaan") }}',
+            dataType: 'json',
+            method: 'get',
+            beforeSend: function() {
+                $("#loading").html('Loading ....')
+            },
+        }).done(function(response) {
+            $("#loading").html(' ')
+            Highcharts.chart('container3', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    align: 'left',
+                    text: 'Penduduk Menurut Pekerjaan '
+                },
+                subtitle: {
+                    align: 'left',
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y}'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                },
+
+                series: [{
+                    name: "",
+                    colorByPoint: true,
+                    data: response
+                }],
+                drilldown: {
+                    breadcrumbs: {
+                        position: {
+                            align: 'right'
+                        }
+                    },
+                }
+            });
+        })
+
+        //  DASHBOARD KELUARGA
+        $.ajax({
+            url: '{{ route("data.keluarga") }}',
+            dataType: 'json',
+            method: 'get',
+            beforeSend: function() {
+                $("#loading").html('Loading ....')
+            },
+        }).done(function(response) {
+            $("#loading").html(' ')
+            Highcharts.chart('container4', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    align: 'left',
+                    text: 'Penduduk Menurut Hubungan Keluarga '
                 },
                 subtitle: {
                     align: 'left',

@@ -56,7 +56,7 @@
                             <th>Tempat Lahir</th>
                             <th>Tanggal Lahir</th>
                             <th>Jenis Kelamin</th>
-                            <th>Status</th>
+                            <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
                         @foreach($penduduk as $val)

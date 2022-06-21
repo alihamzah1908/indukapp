@@ -8,7 +8,7 @@
             </div>  
             <div class="row mt-4">
                 <div class="table-responsive">
-                    <table class="table table-striped mb-0">
+                    <table class="table table-striped mb-0" border='1'>
                         <tr>
                             <th>NIK</th>
                             <th>No KK</th>
@@ -16,7 +16,7 @@
                             <th>Tempat Lahir</th>
                             <th>Tanggal Lahir</th>
                             <th>Jenis Kelamin</th>
-                            <th>Status</th>
+                            <th>Keterangan</th>
                         </tr>
                         @foreach($penduduk as $val)
                         <tr>

@@ -25,6 +25,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/data/jenis-kelamin', 'DashboardController@data_jenis_kelamin')->name('data.jenis_kelamin');
     Route::get('/data/jumlah-penduduk', 'DashboardController@data_jumlah_penduduk')->name('data.jumlah_penduduk');
+    Route::get('/data/data-pendidikan', 'DashboardController@data_pendidikan')->name('data.pendidikan');
+    Route::get('/data/data-pekerjaan', 'DashboardController@data_pekerjaan')->name('data.pekerjaan');
+    Route::get('/data/data-hubungan-keluarga', 'DashboardController@data_hubungan_keluarga')->name('data.keluarga');
     Route::get('/data/agama', 'DashboardController@data_agama')->name('data.agama');
     Route::get('/data/umur', 'DashboardController@data_umur')->name('data.umur');
     Route::get('/penduduk', 'PendudukController@index')->name('penduduk.index');
@@ -43,4 +46,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/data/nik/check', 'PendudukController@check_nik')->name('check.nik');
     Route::get('/download/penduduk/excel', 'LaporanController@penduduk_export')->name('download.penduduk');
     Route::get('/download/penduduk/pdf', 'LaporanController@penduduk_pdf')->name('penduduk.pdf');
+    Route::get('/download/penduduk/blanko', 'LaporanController@penduduk_blanko')->name('penduduk.blanko');
 });
