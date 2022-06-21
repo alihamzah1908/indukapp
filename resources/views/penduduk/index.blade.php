@@ -106,7 +106,8 @@
                                             </svg></i>
                                     </button>
                                     <div class="dropdown-menu" role="menu">
-                                        @if($val->status != 'meninggal' && $val->status_pindah != 'luar')
+                                        {{-- @if($val->status != 'meninggal' && $val->status_pindah != 'luar') --}}
+                                        @if($val->status != 'meninggal')
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&edit={{$val->id}}"><i class="uil uil-edit-alt"></i> Edit</a>
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah"><i class="uil uil-car-sideview"></i> Pindah</a>
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=meninggal"><i class="uil uil-sad-dizzy"></i> Form Meninggal</a>

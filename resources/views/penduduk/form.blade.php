@@ -532,10 +532,10 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        var el = document.getElementById('form-penduduk');
-        el.addEventListener('submit', function() {
-            return confirm('Apakah anda yakin menambahkan data?');
-        }, false);
+        // var el = document.getElementById('form-penduduk');
+        // el.addEventListener('submit', function() {
+        //     return confirm('Apakah anda yakin menambahkan data?');
+        // }, false);
 
         $('body').on('change', '#form-status', function() {
             var status = $(this).val()

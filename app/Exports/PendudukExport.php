@@ -8,6 +8,9 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
 
 
 class PendudukExport implements FromCollection, WithHeadings, WithColumnFormatting, WithMapping
@@ -15,31 +18,37 @@ class PendudukExport implements FromCollection, WithHeadings, WithColumnFormatti
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function __construct($kode, $no_rw)
+    public function __construct($no_rw)
     {
-        $this->kode = $kode;
         $this->no_rw = $no_rw;
     }
 
     public function collection()
     {
-        if(Auth::user()->role == 'desa' || $this->no_rw){
-            $data = DB::table('penduduks')
-                ->where('kode_desa', $this->kode)
+        if(Auth::user()->role == 'desa'){
+            if($this->no_rw){
+                $data = DB::table('penduduks')
+                ->where('kode_desa', Auth::user()->kode_desa)
                 ->where('no_rw', $this->no_rw)
                 ->get();
+            }else{
+                $data = DB::table('penduduks')
+                ->where('kode_desa', Auth::user()->kode_desa)
+                ->get();
+            }
         }else{
             $data = DB::table('penduduks')
             ->get();
         }
+        // dd($data);
         return $data;
     }
 
     public function headings(): array
     {
         return [
-            'NIK',
             'No KK',
+            'NIK',
             'Nama Lengkap',
             'Tempat Lahir',
             'Tanggal Lahir',
@@ -55,8 +64,8 @@ class PendudukExport implements FromCollection, WithHeadings, WithColumnFormatti
     public function map($data): array
     {
         return [
-            $data->nik,
-            $data->no_kk,
+            "'" . $data->no_kk,
+            "'" . $data->nik,
             $data->nama_lengkap,
             $data->tempat_lahir,
             $data->tanggal_lahir,
@@ -73,4 +82,5 @@ class PendudukExport implements FromCollection, WithHeadings, WithColumnFormatti
     {
         return [];
     }
+
 }

@@ -93,7 +93,7 @@
         <div class="card">
             <div class="card-body p-0" style="height: 400px;">
                 <div class="table-responsive">
-                    <table class="table" id="agama">
+                    <table class="table table-striped" id="agama">
                         <thead>
                             <tr>
                                 <th>Agama</th>

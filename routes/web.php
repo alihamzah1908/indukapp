@@ -41,5 +41,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/data/kecamatan', 'PendudukController@data_kecamatan')->name('data.kecamatan');
     // GET CHECK NIK 
     Route::get('/data/nik/check', 'PendudukController@check_nik')->name('check.nik');
-    Route::get('/download/data/penduduk', 'LaporanController@penduduk_export')->name('download.penduduk');
+    Route::get('/download/penduduk/excel', 'LaporanController@penduduk_export')->name('download.penduduk');
+    Route::get('/download/penduduk/pdf', 'LaporanController@penduduk_pdf')->name('penduduk.pdf');
 });

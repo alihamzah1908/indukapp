@@ -12,9 +12,9 @@ class DashboardController extends Controller
     public function data_agama(Request $request)
     {
         if (Auth::user()->role == 'super admin') {
-            $where = false;
+            $where = 'WHERE status != "meninggal"';
         } else if (Auth::user()->role == 'desa' || Auth::user()->role == 'kecamatan') {
-            $where = 'WHERE kode_desa=' . Auth::user()->kode_desa . ' AND ' . 'kode_kecamatan=' . Auth::user()->kode_kecamatan;
+            $where = 'WHERE status != "meninggal" AND kode_desa=' . Auth::user()->kode_desa . ' AND ' . 'kode_kecamatan=' . Auth::user()->kode_kecamatan;
         }
         $data = DB::select('SELECT agama, COUNT(*) as n 
         FROM penduduks 
@@ -39,9 +39,9 @@ class DashboardController extends Controller
     public function data_umur(Request $request)
     {
         if (Auth::user()->role == 'super admin') {
-            $where = false;
+            $where = 'WHERE status != "meninggal"';
         } else if (Auth::user()->role == 'desa' || Auth::user()->role == 'kecamatan') {
-            $where = 'WHERE kode_desa=' . Auth::user()->kode_desa . ' AND ' . 'kode_kecamatan=' . Auth::user()->kode_kecamatan;
+            $where = 'WHERE status != "meninggal" AND kode_desa=' . Auth::user()->kode_desa . ' AND ' . 'kode_kecamatan=' . Auth::user()->kode_kecamatan;
         }
         $data = DB::select('SELECT 
          CASE 

@@ -10,10 +10,19 @@
                     <div class="col-md-3">
                         <label class="form-label font-weight-bold" for="form9Example2">RW</label>
                         @php
-                        $rw = \App\Models\Penduduk::select('no_rw')
-                        ->orderBy('no_rw','asc')
-                        ->groupBy('no_rw')
-                        ->get();
+                        if(Auth::user()->role == 'desa'){
+                            $rw = \App\Models\Penduduk::select('no_rw')
+                            ->where('kode_desa', Auth::user()->kode_desa)
+                            ->orderBy('no_rw','asc')
+                            ->groupBy('no_rw')
+                            ->get();
+                        }else{
+                            $rw = \App\Models\Penduduk::select('no_rw')
+                            ->orderBy('no_rw','asc')
+                            ->groupBy('no_rw')
+                            ->get();
+                        }
+                        
                         @endphp
                         <select name="no_rw" class="form-control">
                             <option value="">Pilih</option>
@@ -36,13 +45,26 @@
                     <h4 class="header-title mt-0 mb-1">Laporan Penduduk</h4>
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
-                    <a href="javascript:void(0)" class="download-excel" data-bind="{{ Auth::user()->kode_desa }}">
+                    <a href="javascript:void(0)" class="download-excel">
                         <span class="m-y-5 badge badge-pill badge-primary">
                             <div id="loading"></div>
                             <div id="text-button-voucher" class="text-button text-button-voucher">
-                                <i class="fa fa-download" aria-hidden="true"></i> Export Excel
+                                <i class="uil uil-file-download"></i> Export Excel
                             </div>
                             <div id="loading-wrap-voucher" class="text-center loading-wrap loading-wrap-voucher" style="display: none;">
+                                <div class="spinner-border text-light" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </span>
+                    </a>
+                    <a href="{{ route('penduduk.pdf') }}">
+                        <span class="m-y-5 badge badge-pill badge-danger">
+                            <div id="loading"></div>
+                            <div id="text-button-voucher" class="text-button text-button-voucher">
+                                <i class="uil uil-file-download"></i> Download PDF
+                            </div>
+                            <div id="loading-wrap-voucher-pdf" class="text-center loading-wrap loading-wrap-voucher-pdf" style="display: none;">
                                 <div class="spinner-border text-light" role="status">
                                     <span class="sr-only">Loading...</span>
                                 </div>
@@ -132,7 +154,6 @@ Data Per Halaman : {{ $penduduk->perPage() }} <br />
                     responseType: 'blob'
                 },
                 data: {
-                    'kode': kode,
                     'no_rw': no_rw
                 },
                 beforeSend: function(){
@@ -143,7 +164,7 @@ Data Per Halaman : {{ $penduduk->perPage() }} <br />
                     var a = document.createElement('a');
                     var url = window.URL.createObjectURL(data);
                     a.href = url;
-                    a.download = 'Data-Penduduk' + kode + '.xlsx';
+                    a.download = 'Data-Penduduk.xlsx';
                     document.body.append(a);
                     a.click();
                     document.body.removeChild(a);
