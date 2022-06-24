@@ -52,18 +52,20 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">No KK</label>
-                                        <input type="number" minlength="16" name="kk" id="kk" class="form-control" value="{{ $penduduk ? $penduduk->no_kk : '' }}" @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif/>
+                                        <input type="number" minlength="16" name="kk" id="kk" class="form-control" value="{{ $penduduk ? $penduduk->no_kk : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif/>
                                     </div>
                                 </div>
-                                @if(request()->status == 'pindah' || request()->status == 'meninggal')
+                                @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_luar' || request()->status == 'pindah_domisili_dalam'|| request()->status == 'meninggal')
                                 <div class="col-md-4">
                                     <input type="hidden" name="status" value="{{ request()->status }}" />
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Status Data</label>
-                                        <select name="status" class="form-control" id="form-status" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif>
+                                        <select name="status" class="form-control" id="form-status" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') disabled @endif>
                                             <option value="" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif>Pilih</option>
-                                            <option value="pindah" @if($penduduk) {{ request()->status == 'pindah' || request()->status == 'pindah' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif>Pindah</option>
+                                            <option value="pindah_domisili_dalam" @if($penduduk) {{ request()->status == 'pindah_domisili_dalam' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif>Pindah Domisili Masih Dalam Kabupaten</option>
+                                            <option value="pindah_domisili_luar" @if($penduduk) {{ request()->status == 'pindah_domisili_luar' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif>Pindah Domisili Ke Luar Kabupaten</option>
+                                            <option value="pindah" @if($penduduk) {{ request()->status == 'pindah' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif>Pindah Domisili</option>
                                             <option value="meninggal" @if($penduduk) {{ request()->status == 'meninggal' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif>Meninggal</option>
                                         </select>
                                     </div>
@@ -91,6 +93,7 @@
                                             <option value="">Pilih</option>
                                             <option value="lahir" @if($penduduk) {{ $penduduk->status == 'lahir' ? ' selected' : ''}}@endif>Lahir</option>
                                             <option value="datang" @if($penduduk) {{ $penduduk->status == 'datang' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Datang</option>
+                                            <option value="datang_non_permanen" @if($penduduk) {{ $penduduk->status == 'datang_non_permanen' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Datang Non Permanen</option>
                                         </select>
                                     </div>
                                 </div>
@@ -102,14 +105,14 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">NIK</label>
-                                        <input type="number" minlength="16" name="nik" id="nik" class="form-control" placeholder="isi dengan nik" value="{{ $penduduk ? $penduduk->nik : '' }}" @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif/>
+                                        <input type="number" minlength="16" name="nik" id="nik" class="form-control" placeholder="isi dengan nik" value="{{ $penduduk ? $penduduk->nik : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif/>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Nama Lengkap</label>
-                                        <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" value="{{ $penduduk ? $penduduk->nama_lengkap : '' }}" @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif/>
+                                        <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" value="{{ $penduduk ? $penduduk->nama_lengkap : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif/>
                                     </div>
                                 </div>
                             </div>
@@ -118,14 +121,14 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Tempat Lahir</label>
-                                        <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" value="{{ $penduduk ? $penduduk->tempat_lahir : '' }}" @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif//>
+                                        <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" value="{{ $penduduk ? $penduduk->tempat_lahir : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif//>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Tanggal Lahir</label>
-                                        <input type="date" name="tanggal_lahir" id="basic-datepicker" class="form-control" value="{{ $penduduk ? $penduduk->tanggal_lahir : '' }}" @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif//>
+                                        <input type="date" name="tanggal_lahir" id="basic-datepicker" class="form-control" value="{{ $penduduk ? $penduduk->tanggal_lahir : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif//>
                                     </div>
                                 </div>
 
@@ -134,7 +137,7 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Jenis Kelamin</label>
-                                        <select id="jenis_kelamin" name="jenis_kelamin" class="form-control" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif/>
+                                        <select id="jenis_kelamin" name="jenis_kelamin" class="form-control" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') disabled @endif/>
                                             <option value="">Pilih</option>
                                             <option value="Laki-laki" @if($penduduk) {{ $penduduk->jenis_kelamin == 'Laki-laki' ? ' selected' : '' }}@endif>Laki - Laki</option>
                                             <option value="Perempuan" @if($penduduk) {{ $penduduk->jenis_kelamin == 'Perempuan' ? ' selected' : '' }}@endif>Perempuan</option>
@@ -148,7 +151,7 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Agama</label>
-                                        <select name="agama" id="agama" class="form-control" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif/>
+                                        <select name="agama" id="agama" class="form-control" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') disabled @endif/>
                                             <option value="">Pilih</option>
                                             <option value="Islam" @if($penduduk) {{ $penduduk->agama == 'Islam' ? ' selected' : '' }}@endif>Islam</option>
                                             <option value="Kristen" @if($penduduk) {{ $penduduk->agama == 'Kristen' ? ' selected' : '' }}@endif>Kristen</option>
@@ -164,7 +167,7 @@
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Hubungan Keluarga</label>
-                                        <select name="hubungan_keluarga" id="hubungan_keluarga" class="form-control" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif/>
+                                        <select name="hubungan_keluarga" id="hubungan_keluarga" class="form-control" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') disabled @endif/>
                                             <option value="">Pilih</option>
                                             <option value="Kepala Keluarga" @if($penduduk) {{ $penduduk->hubungan_keluarga == 'Kepala Keluarga' ? ' selected' : '' }}@endif>Kepala Keluarga</option>
                                             <option value="Suami" @if($penduduk) {{ $penduduk->hubungan_keluarga == 'Suami' ? ' selected' : '' }}@endif>Suami</option>
@@ -183,8 +186,9 @@
                                 <div class="col">
                                     <!-- Email input -->
                                     <div class="form-outline">
+                                        <input type="hidden" name="pendidikan_terakhir" value="{{ $penduduk ? $penduduk->pddk_akhir : ' ' }}">
                                         <label class="form-label font-weight-bold" for="form9Example2">Pendidikan Terakhir</label>
-                                        <select name="pendidikan_terakhir" id="pendidikan_terakhir" class="form-control" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif/>
+                                        <select name="pendidikan_terakhir" id="pendidikan_terakhir" class="form-control" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') disabled @endif/>
                                             <option value="Tidak/Belum Sekolah" @if($penduduk) {{ $penduduk->pddk_akhir == 'Tidak/Belum Sekolah ' ? ' selected' : '' }}@endif>Tidak/Belum Sekolah</option>
                                             <option value="Tidak Tamat SD/Sederajat" @if($penduduk) {{ $penduduk->pddk_akhir == 'Tidak Tamat SD/Sederajat' ? ' selected' : '' }}@endif>Tidak Tamat SD/Sederajat</option>
                                             <option value="SD/Sederajat" @if($penduduk) {{ $penduduk->pddk_akhir == 'SD/Sederajat' ? ' selected' : '' }}@endif>SD/Sederajat</option>
@@ -202,7 +206,7 @@
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Pekerjaan</label>
-                                        <input type="text" name="pekerjaan" id="pekerjaan" class="form-control" value="{{ $penduduk ? $penduduk->pekerjaan : '' }}" @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif//>
+                                        <input type="text" name="pekerjaan" id="pekerjaan" class="form-control" value="{{ $penduduk ? $penduduk->pekerjaan : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif//>
                                     </div>
                                 </div>
                             </div>
@@ -211,7 +215,7 @@
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Kecamatan</label>
-                                        <select id="kode_kecamatan" name="kode_kecamatan" class="form-control" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif>
+                                        <select id="kode_kecamatan" name="kode_kecamatan" class="form-control" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') disabled @endif>
                                             @php
                                             $kecamatan = \App\Models\Kecamatan::all();
                                             @endphp
@@ -230,7 +234,7 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Desa/Kelurahan</label>
-                                        <select name="kode_desa" id="kode_desa" class="form-control" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif>
+                                        <select name="kode_desa" id="kode_desa" class="form-control" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') disabled @endif>
                                             @if($penduduk)
                                             @php
                                             if($penduduk->get_pindah){
@@ -254,14 +258,14 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">RW</label>
-                                        <input type="number" name="no_rw" id="no_rw" minlength="3" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rw_baru : $penduduk->no_rw }}" @else value="" @endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif>
+                                        <input type="number" name="no_rw" id="no_rw" minlength="3" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rw_baru : $penduduk->no_rw }}" @else value="" @endif @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">RT</label>
-                                        <input type="number" name="no_rt" id="no_rt" minlength="3" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif/>
+                                        <input type="number" name="no_rt" id="no_rt" minlength="3" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->rt_baru : $penduduk->no_rt }}" @else value="" @endif @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif/>
                                     </div>
                                 </div>
                             </div>
@@ -270,7 +274,7 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Alamat Lengkap</label>
-                                        <textarea id="alamat" name="alamat" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->alamat_baru : $penduduk->alamat }}" @else value="" @endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif/>@if($penduduk) {{ $penduduk->get_pindah ? $penduduk->get_pindah->alamat_baru : $penduduk->alamat }}@endif</textarea>
+                                        <textarea id="alamat" name="alamat" class="form-control" @if($penduduk) value="{{ $penduduk->get_pindah ? $penduduk->get_pindah->alamat_baru : $penduduk->alamat }}" @else value="" @endif @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif/>@if($penduduk) {{ $penduduk->get_pindah ? $penduduk->get_pindah->alamat_baru : $penduduk->alamat }}@endif</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -289,9 +293,9 @@
                                     <div class="col-md-6">
                                         <div>
                                             <input type="radio" class="pindah" name="status_pindah" value="dalam">
-                                            <label for="huey">Dalam Kabupaten</label>
+                                            <label for="huey">Pindah Dalam Kabupaten</label>
                                             <input type="radio" class="pindah" name="status_pindah" value="luar">
-                                            <label for="dewey">Luar Kabupaten</label>
+                                            <label for="dewey">Pindah Luar Kabupaten</label>
                                         </div>
                                     </div>
                                 </div>
@@ -440,7 +444,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="form-meninggal" class="mt-4 border-top" @if(!$penduduk || request()->edit != null || request()->status == 'pindah') style="display: none;" @endif>
+                            <div id="form-meninggal" class="mt-4 border-top" @if(!$penduduk || request()->edit != null || request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar') style="display: none;" @endif>
                                 <h4 class="header-title mt-0 mb-1 mt-4">Informasi Meninggal</h4>
                                 @php
                                 if($penduduk){

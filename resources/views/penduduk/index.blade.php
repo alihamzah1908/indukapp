@@ -84,6 +84,14 @@
                                 <span class="badge badge-primary">
                                     {{ ucfirst($val->status) }}
                                 </span>
+                                @elseif($val->status == 'pindah_domisili_dalam')
+                                <span class="badge badge-primary">
+                                    Pindah Domisili Dalam Kabupaten
+                                </span>
+                                @elseif($val->status == 'pindah_domisili_luar')
+                                <span class="badge badge-primary">
+                                    Pindah Domisili Luar Kabupaten
+                                </span>
                                 @elseif($val->status == 'pindah' && $val->status_pindah == 'luar')
                                 <span class="badge badge-primary">
                                     Pindah (Luar Ciamis)
@@ -91,6 +99,10 @@
                                 @elseif($val->status == 'datang')
                                 <span class="badge badge-success">
                                     {{ ucfirst($val->status) }}
+                                </span>
+                                @elseif($val->status == 'datang_non_permanen')
+                                <span class="badge badge-success">
+                                    Datang Non Permanen
                                 </span>
                                 @elseif($val->status == 'lahir')
                                 <span class="badge badge-warning">
@@ -109,7 +121,9 @@
                                         {{-- @if($val->status != 'meninggal' && $val->status_pindah != 'luar') --}}
                                         @if($val->status != 'meninggal')
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&edit={{$val->id}}"><i class="uil uil-edit-alt"></i> Edit</a>
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah"><i class="uil uil-car-sideview"></i> Pindah</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah_domisili_dalam"><i class="uil uil-car-sideview"></i> Pindah Domisili Masih Dalam Kabupaten</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah_domisi_luar"><i class="uil uil-car-sideview"></i> Pindah Domisili Ke Luar Kabupaten</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah"><i class="uil uil-car-sideview"></i> Pindah Permanen</a>
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=meninggal"><i class="uil uil-sad-dizzy"></i> Form Meninggal</a>
                                         @endif
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.detail', $val->id) }}"><i class="uil uil-search"></i> Detail</a>

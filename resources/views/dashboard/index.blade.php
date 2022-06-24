@@ -8,7 +8,7 @@
 
 <div class="row page-title align-items-center">
     <div class="col-md-12">
-        <h4 class="mb-1 mt-0">SUMMARY REPORT DATA INFORMASI KEPENDUDUKAN KABUPATEN CIAMIS</h4>
+        <h4 class="mb-1 mt-0">RINGKASAN LAPORAN DATA INFORMASI KEPENDUDUKAN KABUPATEN CIAMIS</h4>
     </div>
 </div>
 
