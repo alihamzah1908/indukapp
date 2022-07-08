@@ -7,27 +7,31 @@
         <div class="card-body">
             <form action="{{ route('penduduk.index') }}" method="get">
                 <div class="row">
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                         <label class="form-label font-weight-bold" for="form9Example2">Status</label>
                         <select name="status" class="form-control">
                             <option value="">Pilih</option>
-                            <option value="meninggal"{{ request()->status == 'meninggal' ? ' selected' : ''}}>Meninggal</option>
-                            <option value="pindah"{{ request()->status == 'pindah' ? ' selected' : ''}}>Pindah</option>
+                            <option value="meninggal" {{ request()->status == 'meninggal' ? ' selected' : ''}}>Meninggal</option>
+                            <option value="pindah" {{ request()->status == 'pindah' ? ' selected' : ''}}>Pindah</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label font-weight-bold" for="form9Example2">Jenis Kelamin</label>
                         <select name="jenis_kelamin" class="form-control">
                             <option value="">Pilih</option>
-                            <option value="Laki-laki"{{ request()->jenis_kelamin == 'Laki-laki' ? ' selected' : ''}}>Laki - Laki</option>
-                            <option value="Perempuan"{{ request()->jenis_kelamin == 'Perempuan' ? ' selected' : ''}}>Perempuan</option>
+                            <option value="Laki-laki" {{ request()->jenis_kelamin == 'Laki-laki' ? ' selected' : ''}}>Laki - Laki</option>
+                            <option value="Perempuan" {{ request()->jenis_kelamin == 'Perempuan' ? ' selected' : ''}}>Perempuan</option>
                         </select>
-                    </div>
-                    <div class="col-md-3">
+                    </div> -->
+                    <div class="col-md-4">
                         <label class="form-label font-weight-bold" for="form9Example2">NIK</label>
-                        <input type="text" name="nik" class="form-control" value="{{ request()->nik }}" />
+                        <input type="text" name="nik" class="form-control" value="{{ request()->nik }}" placeholder="Cari nik ..."/>
                     </div>
-                    <div class="col-md-3 d-flex justify-content-end">
+                    <div class="col-md-4">
+                        <label class="form-label font-weight-bold" for="form9Example2">Cari KK</label>
+                        <input type="text" name="no_kk" class="form-control" value="{{ request()->no_kk }}" placeholder="Cari kk ..."/>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-end">
                         <button class="btn btn-primary-custom btn-rounded mt-4" type="submit"><i class="uil uil-search"></i> Cari</button>
                     </div>
                 </div>
@@ -76,21 +80,30 @@
                                 <span class="badge badge-danger">
                                     {{ ucfirst($val->status) }}
                                 </span>
-                                @elseif(Auth::user()->role != 'super admin' && $val->status == 'pindah' && $val->kode_desa_baru == Auth::user()->kode_desa)
+                               {{-- @elseif(Auth::user()->role != 'super admin' && $val->status == 'pindah_domisili_dalam' && $val->status == 'pindah_domisili_luar' && $val->status == 'pindah_permanen_dalam' && $val->status == 'pindah_permanen_luar' && $val->kode_desa_baru == Auth::user()->kode_desa) --}}
+                                @elseif(Auth::user()->role != 'super admin' && $val->kode_desa_baru == Auth::user()->kode_desa)
                                 <span class="badge badge-success">
-                                    Datang
+                                    @if($val->status == 'pindah_permanen_dalam')
+                                        Datang Permanen
+                                    @elseif($val->status == 'pindah_domisili_dalam')
+                                        Datang Non Permanen
+                                    @endif
                                 </span>
-                                @elseif($val->status == 'pindah')
+                                @elseif($val->status == 'pindah_permanen_dalam')
                                 <span class="badge badge-primary">
-                                    {{ ucfirst($val->status) }}
+                                    Pindah Permanen Dalam Daerah kabupaten
+                                </span>
+                                @elseif($val->status == 'pindah_permanen_luar')
+                                <span class="badge badge-primary">
+                                    Pindah Permanen Luar Daerah kabupaten
                                 </span>
                                 @elseif($val->status == 'pindah_domisili_dalam')
                                 <span class="badge badge-primary">
-                                    Pindah Domisili Dalam Kabupaten
+                                    Penduduk Beda Domisili Dalam kabupaten
                                 </span>
                                 @elseif($val->status == 'pindah_domisili_luar')
                                 <span class="badge badge-primary">
-                                    Pindah Domisili Luar Kabupaten
+                                    Penduduk Beda Domisili Luar kabupaten
                                 </span>
                                 @elseif($val->status == 'pindah' && $val->status_pindah == 'luar')
                                 <span class="badge badge-primary">
@@ -98,7 +111,7 @@
                                 </span>
                                 @elseif($val->status == 'datang')
                                 <span class="badge badge-success">
-                                    {{ ucfirst($val->status) }}
+                                    Datang Permanen
                                 </span>
                                 @elseif($val->status == 'datang_non_permanen')
                                 <span class="badge badge-success">
@@ -119,12 +132,19 @@
                                     </button>
                                     <div class="dropdown-menu" role="menu">
                                         {{-- @if($val->status != 'meninggal' && $val->status_pindah != 'luar') --}}
-                                        @if($val->status != 'meninggal')
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&edit={{$val->id}}"><i class="uil uil-edit-alt"></i> Edit</a>
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah_domisili_dalam"><i class="uil uil-car-sideview"></i> Pindah Domisili Masih Dalam Kabupaten</a>
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah_domisi_luar"><i class="uil uil-car-sideview"></i> Pindah Domisili Ke Luar Kabupaten</a>
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah"><i class="uil uil-car-sideview"></i> Pindah Permanen</a>
-                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=meninggal"><i class="uil uil-sad-dizzy"></i> Form Meninggal</a>
+                                        @if($val->kode_desa_baru == Auth::user()->kode_desa || $val->status != 'meninggal' && $val->status != 'pindah_domisili_dalam' && $val->status != 'pindah_domisili_luar' && $val->status != 'pindah_permanen_dalam' && $val->status != 'pindah_permanen_luar')
+                                        @if($val->status == 'lahir')
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?id={{ $val->id }}"><i class="uil uil-edit-alt"></i> Edit</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?id={{ $val->id }}&status=pindah"><i class="uil uil-car-sideview"></i> Pindah</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?id={{ $val->id }}&status=meninggal"><i class="uil uil-sad-dizzy"></i> Meninggal</a>
+                                        @else 
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}"><i class="uil uil-edit-alt"></i> Edit</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah"><i class="uil uil-car-sideview"></i> Pindah</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=meninggal"><i class="uil uil-sad-dizzy"></i> Meninggal</a>
+                                        @endif
+                                        <!-- <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah_domisili_dalam"><i class="uil uil-car-sideview"></i> Pindah Domisili Masih Dalam Kabupaten</a>
+                                        <a class="dropdown-item" role="presentation" href="{{ route('penduduk.form') }}?nik={{ $val->nik }}&status=pindah_domisi_luar"><i class="uil uil-car-sideview"></i> Pindah Domisili Ke Luar Kabupaten</a> -->
+                                       
                                         @endif
                                         <a class="dropdown-item" role="presentation" href="{{ route('penduduk.detail', $val->id) }}"><i class="uil uil-search"></i> Detail</a>
                                     </div>

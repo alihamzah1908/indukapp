@@ -18,16 +18,18 @@
     <div class="col-md-12">
         <div class="card">
             @php
-            if(request()->nik){
-            $action = route("penduduk.update");
+            if(request()->nik || request()->id){
+                $action = route("penduduk.update");
             }else{
-            $action = route("penduduk.add");
+                $action = route("penduduk.add");
             }
             @endphp
-            <form action="{{ $action }}" method="post" id="{{ request()->nik ? '' : 'form-penduduk'}}">
+            <form action="{{ $action }}" method="post" id="{{ request()->nik ? 'edit-penduduk' : 'form-penduduk'}}">
                 @csrf
                 <input type="hidden" name="nik" value="{{ $penduduk ? $penduduk->nik : '' }}" />
                 <input type="hidden" name="status" value="{{ request()->status ? request()->status : '' }}" />
+                <input type="hidden" name="nama_kecamatan" value="{{ $penduduk ? $penduduk->kecamatan : ''  }}" />
+                <input type="hidden" name="kelurahan" value="{{ $penduduk ? $penduduk->kelurahan : ''  }}" />
                 <input type="hidden" name="kode_kecamatan" value="{{ $penduduk ? $penduduk->kode_kecamatan : ''  }}" />
                 <input type="hidden" name="kode_desa" value="{{ $penduduk ? $penduduk->kode_desa : ''  }}" />
                 <input type="hidden" name="kode_desa_asal" value="{{ $penduduk && $penduduk->get_pindah != '' ? $penduduk->get_pindah->kode_desa_baru : ''  }}" />
@@ -37,13 +39,20 @@
                         <div class="card-body">
                             <div class="row ml-0" style="border-bottom: 1px solid #990073;">
                                 <div class="col-md-6">
-                                    <h4 class="header-title mt-0 mb-3">Formulir Tambah Penduduk</h4>
+                                    @if(request()->status == 'meninggal')
+                                        <h4 class="header-title mt-0 mb-3">Formulir Meninggal</h4>
+                                    @elseif(request()->status == 'pindah')
+                                        <h4 class="header-title mt-0 mb-3">Formulir Pindah Penduduk</h4>
+                                    @else 
+                                        <h4 class="header-title mt-0 mb-3">Formulir Penduduk</h4>
+                                    @endif
+                                    
                                 </div>
                                 @if($penduduk)
                                     @if($penduduk->status == 'pindah')
-                                        <div class="col-md-6 d-flex justify-content-end mb-4">
-                                            <button type="button" class="btn btn-sm btn-primary btn-rounded" id="lihat-riwayat"><i class="uil uil-search"></i> Riwayat Pindah</button>
-                                        </div>
+                                    <div class="col-md-6 d-flex justify-content-end mb-4">
+                                        <button type="button" class="btn btn-sm btn-primary btn-rounded" id="lihat-riwayat"><i class="uil uil-search"></i> Riwayat Pindah</button>
+                                    </div>
                                     @endif
                                 @endif
                             </div>
@@ -55,18 +64,19 @@
                                         <input type="number" minlength="16" name="kk" id="kk" class="form-control" value="{{ $penduduk ? $penduduk->no_kk : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif/>
                                     </div>
                                 </div>
-                                @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_luar' || request()->status == 'pindah_domisili_dalam'|| request()->status == 'meninggal')
+                                @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_luar' || request()->status == 'pindah_domisili_dalam')
                                 <div class="col-md-4">
-                                    <input type="hidden" name="status" value="{{ request()->status }}" />
+                                    <!-- <input type="hidden" name="status" value="{{ request()->status }}" /> -->
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Status Data</label>
-                                        <select name="status" class="form-control" id="form-status" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') disabled @endif>
-                                            <option value="" @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif>Pilih</option>
-                                            <option value="pindah_domisili_dalam" @if($penduduk) {{ request()->status == 'pindah_domisili_dalam' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif>Pindah Domisili Masih Dalam Kabupaten</option>
-                                            <option value="pindah_domisili_luar" @if($penduduk) {{ request()->status == 'pindah_domisili_luar' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif>Pindah Domisili Ke Luar Kabupaten</option>
-                                            <option value="pindah" @if($penduduk) {{ request()->status == 'pindah' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') readonly @endif>Pindah Domisili</option>
-                                            <option value="meninggal" @if($penduduk) {{ request()->status == 'meninggal' ? ' selected' : ''}}@endif @if(request()->status == 'pindah' || request()->status == 'meninggal') disabled @endif>Meninggal</option>
+                                        <select name="status" class="form-control" id="form_status_pindah" required>
+                                            <option value="">Pilih</option>
+                                            <option value="pindah_domisili_dalam">Penduduk Beda Domisili Dalam kabupaten</option>
+                                            <option value="pindah_domisili_luar">Penduduk Beda Domisili Luar kabupaten</option>
+                                            <option value="pindah_permanen_dalam">Pindah Permanen Dalam Daerah kabupaten</option>
+                                            <option value="pindah_permanen_luar">Pindah Permanen Luar Daerah kabupaten</option>
+                                            <option value="meninggal">Meninggal</option>
                                         </select>
                                     </div>
                                 </div>
@@ -75,25 +85,40 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Status Data</label>
-                                        <select name="status" class="form-control" id="form-status" disabled>
+                                        <select name="status" class="form-control" id="form_status">
                                             <option value="">Pilih</option>
                                             <option value="lahir" @if($penduduk) {{ $penduduk->status == 'lahir' ? ' selected' : ''}}@endif>Lahir</option>
-                                            <option value="datang" @if($penduduk) {{ $penduduk->status == 'datang' ? ' selected' : ''}}@endif>Datang</option>
-                                            <option value="pindah" @if($penduduk) {{ $penduduk->status == 'pindah' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Pindah</option>
+                                            <option value="pindah_domisili_dalam"@if($penduduk) {{ $penduduk->status == 'pindah_domisili_dalam' ? ' selected' : ''}}@endif>Penduduk Beda Domisili Dalam kabupaten</option>
+                                            <option value="pindah_domisili_luar"@if($penduduk) {{ $penduduk->status == 'pindah_domisili_luar' ? ' selected' : ''}}@endif>Penduduk Beda Domisili Luar kabupaten</option>
+                                            <option value="pindah_permanen_dalam"@if($penduduk) {{ $penduduk->status == 'pindah_permanen_dalam' ? ' selected' : ''}}@endif>Pindah Permanen Dalam Daerah kabupaten</option>
+                                            <option value="pindah_permanen_luar"@if($penduduk) {{ $penduduk->status == 'pindah_permanen_luar' ? ' selected' : ''}}@endif>Pindah Permanen Luar Daerah kabupaten</option>
+                                            <option value="datang" @if($penduduk) {{ $penduduk->status == 'datang' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Datang Permanen</option>
+                                            <option value="datang_non_permanen" @if($penduduk) {{ $penduduk->status == 'datang_non_permanen' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Datang Permanen</option>
                                             <option value="meninggal" @if($penduduk) {{ $penduduk->status == 'meninggal' ? ' selected' : ''}}@endif>Meninggal</option>
                                         </select>
                                     </div>
                                 </div>
-                                @elseif(request()->edit == null)
+                                @elseif(request()->edit == null && request()->status != 'meninggal')
                                 <div class="col-md-4">
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">Status Data</label>
-                                        <select name="status" class="form-control" id="form-status">
+                                        <select name="status" class="form-control" id="form_status">
                                             <option value="">Pilih</option>
                                             <option value="lahir" @if($penduduk) {{ $penduduk->status == 'lahir' ? ' selected' : ''}}@endif>Lahir</option>
-                                            <option value="datang" @if($penduduk) {{ $penduduk->status == 'datang' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Datang</option>
+                                            <option value="datang" @if($penduduk) {{ $penduduk->status == 'datang' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Datang Permanen</option>
                                             <option value="datang_non_permanen" @if($penduduk) {{ $penduduk->status == 'datang_non_permanen' || request()->status == 'pindah' ? ' selected' : ''}}@endif>Datang Non Permanen</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                @elseif(request()->status == 'meninggal')
+                                <div class="col-md-4">
+                                    <!-- Name input -->
+                                    <div class="form-outline">
+                                        <label class="form-label font-weight-bold" for="form9Example1">Status Data</label>
+                                        <select name="status" class="form-control" id="form_status">
+                                            <option value="">Pilih</option>
+                                            <option value="meninggal" @if($penduduk) {{ $penduduk->status == 'meninggal' || request()->status == 'meninggal' ? ' selected' : ''}}@endif>Meninggal</option>
                                         </select>
                                     </div>
                                 </div>
@@ -105,7 +130,7 @@
                                     <!-- Name input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example1">NIK</label>
-                                        <input type="number" minlength="16" name="nik" id="nik" class="form-control" placeholder="isi dengan nik" value="{{ $penduduk ? $penduduk->nik : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif/>
+                                        <input type="number" name="nik" id="nik" class="form-control" placeholder="isi dengan nik" value="{{ $penduduk ? $penduduk->nik : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif/>
                                     </div>
                                 </div>
                                 <div class="col">
@@ -128,7 +153,7 @@
                                     <!-- Email input -->
                                     <div class="form-outline">
                                         <label class="form-label font-weight-bold" for="form9Example2">Tanggal Lahir</label>
-                                        <input type="date" name="tanggal_lahir" id="basic-datepicker" class="form-control" value="{{ $penduduk ? $penduduk->tanggal_lahir : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif//>
+                                        <input type="date" name="tanggal_lahir" id="basic-datepicker" class="form-control basic-datepicker" value="{{ $penduduk ? $penduduk->tanggal_lahir : '' }}" @if(request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar' || request()->status == 'meninggal') readonly @endif//>
                                     </div>
                                 </div>
 
@@ -238,17 +263,17 @@
                                             @if($penduduk)
                                             @php
                                             if($penduduk->get_pindah){
-                                            $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->get_pindah->kode_kecamatan)->get();
+                                                $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->get_pindah->kode_kecamatan)->get();
                                             }else{
-                                            $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->kode_kecamatan)->get();
+                                                $desa = \App\Models\Desa::where('code_kecamatan', $penduduk->kode_kecamatan)->get();
                                             }
                                             @endphp
                                             @foreach($desa as $val)
-                                            @if($penduduk->get_pindah)
-                                            <option value="{{ $val->code_kelurahan }}" @if($penduduk->get_pindah){{ $penduduk->get_pindah->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
-                                            @else
-                                            <option value="{{ $val->code_kelurahan }}" @if($penduduk) {{ $penduduk->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
-                                            @endif
+                                                @if($penduduk->get_pindah)
+                                                    <option value="{{ $val->code_kelurahan }}" @if($penduduk->get_pindah){{ $penduduk->get_pindah->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
+                                                @else
+                                                    <option value="{{ $val->code_kelurahan }}" @if($penduduk) {{ $penduduk->kode_desa == $val->code_kelurahan ? ' selected' : ''}}@endif>{{ $val->nama_kelurahan }}</option>
+                                                @endif
                                             @endforeach
                                             @endif
                                         </select>
@@ -278,7 +303,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="form-pindah" class="mt-4" @if(!$penduduk || request()->edit != null || request()->status == 'meninggal') style="display: none;" @endif>
+                            <div id="form-pindah" class="mt-4" @if(!$penduduk || request()->edit != null || request()->status != 'pindah' || request()->status == 'meninggal') style="display: none;" @endif>
                                 <h4 class="header-title mt-0 mb-1 mt-4">Form Kepindahan</h4>
                                 @php
                                 if($penduduk){
@@ -290,12 +315,17 @@
                                 }
                                 @endphp
                                 <div class="row mt-4">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div>
-                                            <input type="radio" class="pindah" name="status_pindah" value="dalam">
-                                            <label for="huey">Pindah Dalam Kabupaten</label>
-                                            <input type="radio" class="pindah" name="status_pindah" value="luar">
-                                            <label for="dewey">Pindah Luar Kabupaten</label>
+                                            <input type="radio" class="pindah" name="status_pindah" value="pindah_domisili_dalam">
+                                            <label for="huey" class="mr-3">Penduduk Beda Domisili Dalam kabupaten</label>
+                                            <input type="radio" class="pindah" name="status_pindah" value="pindah_domisili_luar">
+                                            <label for="dewey" class="mr-3">Penduduk Beda Domisili Luar kabupaten</label>
+                                            <br />
+                                            <input type="radio" class="pindah" name="status_pindah" value="pindah_permanen_dalam">
+                                            <label for="dewey" class="mr-3">Pindah Permanen Dalam Daerah kabupaten</label>
+                                            <input type="radio" class="pindah" name="status_pindah" value="pindah_permanen_luar">
+                                            <label for="dewey" class="mr-3">Pindah Permanen Luar Daerah kabupaten</label>
                                         </div>
                                     </div>
                                 </div>
@@ -444,15 +474,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="form-meninggal" class="mt-4 border-top" @if(!$penduduk || request()->edit != null || request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar') style="display: none;" @endif>
+                            <div id="form-meninggal" class="mt-4 border-top" @if(!$penduduk || request()->edit != null || request()->status != 'meninggal' || request()->status == 'pindah' || request()->status == 'pindah_domisili_dalam' || request()->status == 'pindah_domisili_luar') style="display: none;" @endif>
                                 <h4 class="header-title mt-0 mb-1 mt-4">Informasi Meninggal</h4>
                                 @php
                                 if($penduduk){
-                                $status_meninggal = \App\Models\PendudukMeninggal::where('nik', $penduduk->nik)
-                                ->orderBy('id','desc')
-                                ->first();
+                                    $status_meninggal = \App\Models\PendudukMeninggal::where('nik', $penduduk->nik)
+                                    ->orderBy('id','desc')
+                                    ->first();
                                 }else{
-                                $status_meninggal = false;
+                                    $status_meninggal = false;
                                 }
                                 @endphp
                                 <div class="row g-1 mt-4">
@@ -485,7 +515,7 @@
                                 <div class="col-md-1">
                                     <!-- Name input -->
                                     <div class="form-outline" style="margin-top: 30px;">
-                                        @if(request()->nik)
+                                        @if($penduduk)
                                         <button class="btn btn-primary-custom btn-rounded simpan" type="submit">Ubah</button>
                                         @else
                                         <button class="btn btn-primary-custom btn-rounded update" type="submit">Simpan</button>
@@ -541,8 +571,9 @@
         //     return confirm('Apakah anda yakin menambahkan data?');
         // }, false);
 
-        $('body').on('change', '#form-status', function() {
+        $('body').on('change', '#form_status', function() {
             var status = $(this).val()
+            console.log(status)
             if (status == 'pindah') {
                 $('#form-pindah').show()
                 $('#form-meninggal').hide()
@@ -552,6 +583,11 @@
             } else if (status == 'lahir' || status == '') {
                 $('#form-pindah').hide()
                 $('#form-meninggal').hide()
+                $('#nik').removeAttr('name')
+            } else if (status == 'datang') {
+                $('#nik').attr('name', "nik");
+            } else if (status == 'datang_non_permanen') {
+                $('#nik').attr('name', "nik");
             }
         })
 
@@ -611,7 +647,9 @@
             }
         }).done(function(response) {
             $.each(response, function(index, value) {
-                var body = '<option value=' + value.code_kelurahan + '>' + value.nama_kelurahan + '</option>'
+                var kode_desa_exist = '{{ Auth::user()->kode_desa }}';
+                var selected = value.code_kelurahan == kode_desa_exist ? ' selected' : ' ' 
+                var body = '<option value=' + value.code_kelurahan + ' ' + selected + '>' + value.nama_kelurahan + '</option>'
                 $('#kode_desa').append(body)
             })
         })
@@ -637,10 +675,16 @@
 
     $('body').on('click', '.pindah', function() {
         var data = $(this).val()
-        if (data == 'dalam') {
+        if (data == 'pindah_domisili_dalam') {
             $('#dalam-kabupaten').show()
             $('#luar-kabupaten').hide()
-        } else if (data == 'luar') {
+        } else if (data == 'pindah_domisili_luar') {
+            $('#luar-kabupaten').show()
+            $('#dalam-kabupaten').hide()
+        } else if (data == 'pindah_permanen_dalam') {
+            $('#dalam-kabupaten').show()
+            $('#luar-kabupaten').hide()
+        }else if (data == 'pindah_permanen_luar') {
             $('#luar-kabupaten').show()
             $('#dalam-kabupaten').hide()
         }
@@ -671,6 +715,9 @@
             },
             no_rt: {
                 required: true,
+            },
+            form_status: {
+                required: true,
             }
         },
         messages: {
@@ -692,6 +739,32 @@
                 required: "Mohon isi nomor rw",
                 maxlength: 3
             },
+            form_status: {
+                required: "Mohon isi Status Data",
+            },
+
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+</script>
+<script>
+    jQuery.validator.setDefaults({
+        debug: true,
+        success: "valid"
+    });
+    $("#edit-penduduk").validate({
+        rules: {
+            form_status_pindah: {
+                required: true,
+            }
+        },
+        messages: {
+            form_status_pindah: {
+                required: "Mohon isi Status Data",
+            },
+
         },
         submitHandler: function(form) {
             form.submit();

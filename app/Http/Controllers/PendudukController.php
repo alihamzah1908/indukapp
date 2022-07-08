@@ -16,10 +16,12 @@ class PendudukController extends Controller
     public function index(Request $request)
     {
         if (Auth::user()->role == 'super admin') {
-            if ($request["nik"] || $request["jenis_kelamin"] || $request["status"]) {
+            // if ($request["nik"] || $request["jenis_kelamin"] || $request["status"]) {
+            if ($request["nik"] || $request["no_kk"]) {
                 $data["penduduk"] = \App\Models\Penduduk::where('nik', $request["nik"])
-                    ->orWhere('jenis_kelamin', $request["jenis_kelamin"])
-                    ->orWhere('status', $request["status"])
+                    // ->orWhere('jenis_kelamin', $request["jenis_kelamin"])
+                    // ->orWhere('status', $request["status"])
+                    ->orWhere('no_kk', $request["no_kk"])
                     ->orderBy('id', 'desc')
                     ->orderBy('status', 'desc')
                     ->paginate(20);
@@ -29,92 +31,60 @@ class PendudukController extends Controller
                     ->paginate(20);
             }
         } else {
-            if ($request["nik"] || $request["jenis_kelamin"] || $request["status"]) {
-                $data["penduduk"] = DB::table('penduduks as a')
-                    ->select(
-                        'a.id',
-                        'a.nik',
-                        'a.no_kk',
-                        'a.nama_lengkap',
-                        'a.tempat_lahir',
-                        'a.jenis_kelamin',
-                        'a.tanggal_lahir',
-                        'a.hubungan_keluarga',
-                        'a.alamat',
-                        'a.no_rt',
-                        'a.no_rw',
-                        'a.kode_desa',
-                        'a.kelurahan',
-                        'a.kode_kecamatan',
-                        'a.kecamatan',
-                        'a.status',
-                        'a.pddk_akhir',
-                        'a.pekerjaan',
-                        'a.agama',
-                        'a.keterangan',
-                        'b.kode_desa',
-                        'b.kode_desa as kode_desa_baru',
-                        'b.kode_desa_asal'
-                    )
-                    ->leftJoin(DB::raw('( 
+            $penduduk = DB::table('penduduks as a')
+                ->select(
+                    'a.id',
+                    'a.nik',
+                    'a.no_kk',
+                    'a.nama_lengkap',
+                    'a.tempat_lahir',
+                    'a.jenis_kelamin',
+                    'a.tanggal_lahir',
+                    'a.hubungan_keluarga',
+                    'a.alamat',
+                    'a.no_rt',
+                    'a.no_rw',
+                    'a.kode_desa',
+                    'a.kelurahan',
+                    'a.kode_kecamatan',
+                    'a.kecamatan',
+                    'a.status',
+                    'a.pddk_akhir',
+                    'a.pekerjaan',
+                    'a.agama',
+                    'a.keterangan',
+                    'b.kode_desa',
+                    'b.kode_desa as kode_desa_baru',
+                    'b.kode_desa_asal'
+                )
+                ->leftJoin(
+                    DB::raw('( 
                         SELECT * FROM penduduk_pindah pp  
                         WHERE updated_at IN 
                         (SELECT MAX(updated_at) FROM penduduk_pindah GROUP BY nik) 
                         ) as b'),
                     function ($join) {
                         $join->on('b.nik', '=', 'a.nik');
-                    })
-                    ->where('a.kode_desa', Auth::user()->kode_desa)
-                    ->where('a.nik', $request["nik"])
-                    ->orWhere('a.jenis_kelamin', $request["jenis_kelamin"])
-                    ->orWhere('a.status', $request["status"])
-                    ->orWhere('b.kode_desa', Auth::user()->kode_desa)
-                    ->orWhere('b.kode_desa_asal', Auth::user()->kode_desa)
-                    ->orderBy('a.id', 'desc')
-                    ->orderBy('a.status', 'desc')
-                    ->paginate(20);
-            } else {
-                $data["penduduk"] = DB::table('penduduks as a')
-                    ->select(
-                        'a.id',
-                        'a.nik',
-                        'a.no_kk',
-                        'a.nama_lengkap',
-                        'a.tempat_lahir',
-                        'a.jenis_kelamin',
-                        'a.tanggal_lahir',
-                        'a.hubungan_keluarga',
-                        'a.alamat',
-                        'a.no_rt',
-                        'a.no_rw',
-                        'a.kode_desa',
-                        'a.kelurahan',
-                        'a.kode_kecamatan',
-                        'a.kecamatan',
-                        'a.status',
-                        'a.pddk_akhir',
-                        'a.pekerjaan',
-                        'a.agama',
-                        'a.keterangan',
-                        'b.kode_desa as kode_desa_baru',
-                        'b.kode_kecamatan as kode_kecamatan_baru',
-                        'b.status_pindah',
-                        'b.kode_desa_asal'
-                    )
-                    ->leftJoin(DB::raw('( 
-                        SELECT * FROM penduduk_pindah pp  
-                        WHERE updated_at IN 
-                        (SELECT MAX(updated_at) FROM penduduk_pindah GROUP BY nik) 
-                        ) as b'),
-                    function ($join) {
-                        $join->on('b.nik', '=', 'a.nik');
-                    })
-                    ->where('a.kode_desa', Auth::user()->kode_desa)
-                    ->orWhere('b.kode_desa', Auth::user()->kode_desa)
-                    ->orWhere('b.kode_desa_asal', Auth::user()->kode_desa)
-                    ->orderBy('a.id', 'desc')
-                    ->paginate(20);
-            }
+                    }
+                );
+                if($request["nik"] || $request["no_kk"]){
+                    $penduduk->where('a.kode_desa', Auth::user()->kode_desa);
+                    $penduduk->where('a.nik', $request["nik"]);
+                    // ->orWhere('a.jenis_kelamin', $request["jenis_kelamin"])
+                    // ->orWhere('a.status', $request["status"])
+                    $penduduk->orWhere('no_kk', $request["no_kk"]);
+                    $penduduk->orWhere('b.kode_desa', Auth::user()->kode_desa);
+                    $penduduk->orWhere('b.kode_desa_asal', Auth::user()->kode_desa);
+                    $penduduk->orderBy('a.id', 'desc');
+                    $penduduk->orderBy('a.status', 'desc');
+                }else{
+                    $penduduk->where('a.kode_desa', Auth::user()->kode_desa);
+                    $penduduk->orWhere('b.kode_desa', Auth::user()->kode_desa);
+                    $penduduk->orWhere('b.kode_desa_asal', Auth::user()->kode_desa);
+                    $penduduk->orderBy('a.id', 'desc');
+                    $penduduk->orderBy('a.status', 'desc');
+                }
+                $data["penduduk"] = $penduduk->paginate(20);
         }
         return view('penduduk.index', $data);
     }
@@ -126,8 +96,13 @@ class PendudukController extends Controller
      */
     public function create(Request $request)
     {
-        $check = \App\Models\Penduduk::where('nik', $request["nik"])->first();
-        if ($check) {
+        if ($request["nik"]) {
+            $check = \App\Models\Penduduk::where('nik', $request["nik"])
+                ->first();
+            $data["penduduk"] = \App\Models\Penduduk::find($check->id);
+        } elseif ($request["id"]) {
+            $check = \App\Models\Penduduk::where('id', $request["id"])
+                ->first();
             $data["penduduk"] = \App\Models\Penduduk::find($check->id);
         } else {
             $data["penduduk"] = false;
@@ -244,7 +219,7 @@ class PendudukController extends Controller
             $data->status = $request["status"];
             $data->keterangan = $request["keterangan"];
             $data->agama = $request["agama"];
-            if ($request["status"] == 'pindah') {
+            if ($request["status"] == 'pindah_domisili_dalam' || $request["status"] == 'pindah_domisili_luar' || $request["status"] == 'pindah_permanen_dalam' || $request["status"] == 'pindah_permanen_luar') {
                 // CHECK DATA PINDAH
                 $pindah = \App\Models\PendudukPindah::where('nik', $request["nik"])
                     ->where('alamat_asal', '=', $request["alamat_asal"])

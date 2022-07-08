@@ -3,31 +3,55 @@
 <div class="row page-title">
 </div>
 <div class="col-lg-12">
+    @if(Auth::user()->role != 'super admin')
     <div class="card">
         <div class="card-body">
             <form action="{{ route('laporan.index') }}" method="get">
                 <div class="row">
-                    <div class="col-md-3">
+                    @php
+                    if(Auth::user()->role == 'desa'){
+                        // GET DATA RW
+                        $rw = \App\Models\Penduduk::select('no_rw')
+                        ->where('kode_desa', Auth::user()->kode_desa)
+                        ->orderBy('no_rw','asc')
+                        ->groupBy('no_rw')
+                        ->get();
+
+                        // GET DATA RT
+                        $rt = \App\Models\Penduduk::select('no_rt')
+                        ->where('kode_desa', Auth::user()->kode_desa)
+                        ->orderBy('no_rt','asc')
+                        ->groupBy('no_rt')
+                        ->get();
+                    }else{
+                        // GET DATA RW
+                        $rw = \App\Models\Penduduk::select('no_rw')
+                        ->orderBy('no_rw','asc')
+                        ->groupBy('no_rw')
+                        ->get();
+
+                        // GET DATA RT
+                        $rt = \App\Models\Penduduk::select('no_rt')
+                        ->orderBy('no_rt','asc')
+                        ->groupBy('no_rt')
+                        ->get();
+                    }
+                    @endphp
+                    <div class="col-md-4">
                         <label class="form-label font-weight-bold" for="form9Example2">RW</label>
-                        @php
-                        if(Auth::user()->role == 'desa'){
-                            $rw = \App\Models\Penduduk::select('no_rw')
-                            ->where('kode_desa', Auth::user()->kode_desa)
-                            ->orderBy('no_rw','asc')
-                            ->groupBy('no_rw')
-                            ->get();
-                        }else{
-                            $rw = \App\Models\Penduduk::select('no_rw')
-                            ->orderBy('no_rw','asc')
-                            ->groupBy('no_rw')
-                            ->get();
-                        }
-                        
-                        @endphp
                         <select name="no_rw" class="form-control">
                             <option value="">Pilih</option>
                             @foreach($rw as $val)
                             <option value="{{ $val->no_rw }}" {{ $val->no_rw == request()->no_rw ? ' selected' : ''}}>{{ $val->no_rw }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label font-weight-bold" for="form9Example2">RT</label>
+                        <select name="no_rt" class="form-control">
+                            <option value="">Pilih</option>
+                            @foreach($rt as $val)
+                            <option value="{{ $val->no_rt }}" {{ $val->no_rt == request()->no_rt ? ' selected' : ''}}>{{ $val->no_rt }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -38,6 +62,7 @@
             </form>
         </div>
     </div>
+    @endif
     <div class="card">
         <div class="card-body">
             <div class="row">
@@ -45,7 +70,7 @@
                     <h4 class="header-title mt-0 mb-1">Laporan Penduduk</h4>
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
-                    <a href="javascript:void(0)" class="download-excel">
+                    <!-- <a href="javascript:void(0)" class="download-excel">
                         <span class="m-y-5 badge badge-pill badge-primary">
                             <div id="loading_export"></div>
                             <div id="text-button-voucher-export" class="text-button text-button-voucher-export">
@@ -57,8 +82,8 @@
                                 </div>
                             </div>
                         </span>
-                    </a>
-                    <a href="javascript:void(0)" class="download-blanko ml-2">
+                    </a> -->
+                    <!-- <a href="javascript:void(0)" class="download-blanko ml-2">
                         <span class="m-y-5 badge badge-pill badge-warning">
                             <div id="loading_blanko"></div>
                             <div id="text-button-voucher" class="text-button text-button-voucher">
@@ -70,8 +95,9 @@
                                 </div>
                             </div>
                         </span>
-                    </a>
-                    <a href="{{ route('penduduk.pdf') }}{{ request()->no_rw != '' ? '?no_rw=' . request()->no_rw : '' }}" class="ml-2">
+                    </a> -->
+                    @if(Auth::user()->role != 'super admin')
+                    <a href="{{ route('penduduk.pdf') }}{{ request()->no_rw != '' || request()->no_rt != ''? '?no_rw=' . request()->no_rw .'&no_rt=' . request()->no_rt : '' }}" class="ml-2">
                         <span class="m-y-5 badge badge-pill badge-danger">
                             <div id="loading_pdf"></div>
                             <div id="text-button-voucher-pdf" class="text-button text-button-voucher-pdf">
@@ -84,6 +110,7 @@
                             </div>
                         </span>
                     </a>
+                    @endif
                 </div>
             </div>
             <div class="row mt-4">
@@ -115,13 +142,30 @@
                                 <span class="badge badge-danger">
                                     {{ ucfirst($val->status) }}
                                 </span>
-                                @elseif(Auth::user()->role != 'super admin' && $val->status == 'pindah' && $val->kode_desa_baru == Auth::user()->kode_desa)
+                                {{-- @elseif(Auth::user()->role != 'super admin' && $val->status == 'pindah_domisili_dalam' && $val->status == 'pindah_domisili_luar' && $val->status == 'pindah_permanen_dalam' && $val->status == 'pindah_permanen_luar' && $val->kode_desa_baru == Auth::user()->kode_desa) --}}
+                                @elseif(Auth::user()->role != 'super admin' && $val->kode_desa_baru == Auth::user()->kode_desa)
                                 <span class="badge badge-success">
-                                    Datang
+                                    @if($val->status == 'pindah_permanen_dalam')
+                                    Datang Permanen
+                                    @elseif($val->status == 'pindah_domisili_dalam')
+                                    Datang Non Permanen
+                                    @endif
                                 </span>
-                                @elseif($val->status == 'pindah')
+                                @elseif($val->status == 'pindah_permanen_dalam')
                                 <span class="badge badge-primary">
-                                    {{ ucfirst($val->status) }}
+                                    Pindah Permanen Dalam Daerah kabupaten
+                                </span>
+                                @elseif($val->status == 'pindah_permanen_luar')
+                                <span class="badge badge-primary">
+                                    Pindah Permanen Luar Daerah kabupaten
+                                </span>
+                                @elseif($val->status == 'pindah_domisili_dalam')
+                                <span class="badge badge-primary">
+                                    Penduduk Beda Domisili Dalam kabupaten
+                                </span>
+                                @elseif($val->status == 'pindah_domisili_luar')
+                                <span class="badge badge-primary">
+                                    Penduduk Beda Domisili Luar kabupaten
                                 </span>
                                 @elseif($val->status == 'pindah' && $val->status_pindah == 'luar')
                                 <span class="badge badge-primary">
@@ -129,7 +173,11 @@
                                 </span>
                                 @elseif($val->status == 'datang')
                                 <span class="badge badge-success">
-                                    {{ ucfirst($val->status) }}
+                                    Datang Permanen
+                                </span>
+                                @elseif($val->status == 'datang_non_permanen')
+                                <span class="badge badge-success">
+                                    Datang Non Permanen
                                 </span>
                                 @elseif($val->status == 'lahir')
                                 <span class="badge badge-warning">
@@ -169,7 +217,7 @@ Data Per Halaman : {{ $penduduk->perPage() }} <br />
                 data: {
                     'no_rw': no_rw
                 },
-                beforeSend: function(){
+                beforeSend: function() {
                     $("#loading_export").html('Loading ....')
                 },
                 success: function(data) {
@@ -208,7 +256,7 @@ Data Per Halaman : {{ $penduduk->perPage() }} <br />
                 data: {
                     'no_rw': no_rw
                 },
-                beforeSend: function(){
+                beforeSend: function() {
                     $("#loading_blanko").html('Loading ....')
                 },
                 success: function(data) {
